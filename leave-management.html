@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SSC NWR · Leave Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0B1220;
-  --surface:#121B2E;
-  --surface-2:#17223A;
-  --hairline:rgba(201,162,39,0.22);
-  --gold:#C9A227;
-  --gold-soft:rgba(201,162,39,0.14);
-  --capf:#5B7FDB;
-  --noncapf:#2FB88A;
-  --text:#EDEFF5;
-  --muted:#8B93A7;
-  --danger:#E4636F;
-  --warn:#E0A840;
-  --ok:#2FB88A;
-  --radius:16px;
-  --shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
-  font-family:'Inter',sans-serif;
+  --bg:#f0f2f8;
+  --surface:#ffffff;
+  --surface-2:#f8fafc;
+  --hairline:#e2e8f0;
+  --gold:#6366f1;
+  --gold-soft:#eef2ff;
+  --capf:#6366f1;
+  --noncapf:#10b981;
+  --text:#1e293b;
+  --muted:#64748b;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --ok:#10b981;
+  --radius:18px;
+  --shadow: 0 16px 40px rgba(0,0,0,0.12);
+  font-family:'Plus Jakarta Sans',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
 body{
   background:
-    radial-gradient(1200px 600px at 85% -10%, rgba(91,127,219,0.10), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(47,184,138,0.08), transparent 60%),
+    radial-gradient(500px 500px at 100% -5%, rgba(99,102,241,0.07), transparent 60%),
+    radial-gradient(400px 400px at -5% 100%, rgba(16,185,129,0.06), transparent 60%),
     var(--bg);
   color:var(--text);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
 }
-h1,h2,h3,.display{font-family:'Fraunces',serif;}
+h1,h2,h3,.display{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;}
 ::selection{background:var(--gold-soft);}
 ::-webkit-scrollbar{width:8px;height:8px;}
 ::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:4px;}
@@ -47,18 +47,16 @@ a{color:inherit;}
 
 /* ============ SEAL — signature element ============ */
 .seal{
-  width:46px;height:46px;border-radius:50%;
-  background: conic-gradient(from 220deg, #C9A227, #E7CE7A, #C9A227, #8f7419, #C9A227);
+  width:46px;height:46px;border-radius:14px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
   display:flex;align-items:center;justify-content:center;
   position:relative; flex-shrink:0;
-  box-shadow: 0 0 0 1px rgba(201,162,39,0.4), 0 8px 20px -6px rgba(201,162,39,0.5);
+  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
 }
 .seal::before{
-  content:'';position:absolute;inset:4px;border-radius:50%;
-  background:var(--bg);
-  border:1px solid rgba(201,162,39,0.35);
+  content:'';position:absolute;inset:0;border-radius:14px;
 }
-.seal .mark{position:relative;font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--gold);}
+.seal .mark{position:relative;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;color:#fff;}
 .seal.stamping{animation:stamp 0.7s cubic-bezier(.36,1.8,.4,1) 1;}
 @keyframes stamp{
   0%{transform:scale(1) rotate(0deg);}
@@ -84,26 +82,26 @@ a{color:inherit;}
 .login-card .seal .mark{font-size:20px;}
 .login-card h1{font-size:26px;font-weight:600;letter-spacing:0.2px;}
 .login-card .sub{color:var(--muted);font-size:13px;margin-top:6px;letter-spacing:0.4px;text-transform:uppercase;}
-.login-tabs{display:flex;gap:8px;margin:28px 0 18px;background:rgba(255,255,255,0.03);border:1px solid var(--hairline);border-radius:12px;padding:4px;}
+.login-tabs{display:flex;gap:8px;margin:28px 0 18px;background:rgba(15,23,42,0.04);border:1px solid var(--hairline);border-radius:12px;padding:4px;}
 .login-tab{flex:1;padding:9px 0;border:none;background:transparent;color:var(--muted);border-radius:9px;font-size:13px;font-weight:600;transition:all .2s;}
 .login-tab.active{background:var(--gold-soft);color:var(--gold);}
 .login-card input{
-  width:100%;padding:13px 14px;background:rgba(255,255,255,0.03);
+  width:100%;padding:13px 14px;background:rgba(15,23,42,0.04);
   border:1px solid var(--hairline);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:14px;
 }
 .login-card input:focus{outline:2px solid var(--gold);outline-offset:1px;}
-select{color-scheme:dark;}
-select option{background:#17223A;color:#EDEFF5;}
+select{color-scheme:light;}
+select option{background:#ffffff;color:#1e293b;}
 .btn{
   border:none;border-radius:10px;padding:13px 18px;font-size:14px;font-weight:600;
   transition:transform .15s ease, box-shadow .15s ease;
 }
 .btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-.btn-primary{background:linear-gradient(180deg,#D8B849,var(--gold));color:#1a1406;width:100%;}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(201,162,39,0.6);}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;width:100%;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(99,102,241,0.5);}
 .btn-ghost{background:transparent;border:1px solid var(--hairline);color:var(--text);}
-.btn-ghost:hover{border-color:var(--gold);}
-.btn-danger{background:rgba(228,99,111,0.14);color:#F0929B;border:1px solid rgba(228,99,111,0.35);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.btn-danger{background:rgba(239,68,68,0.14);color:#b91c1c;border:1px solid rgba(239,68,68,0.35);}
 .login-err{color:var(--danger);font-size:12.5px;margin-top:-4px;margin-bottom:10px;min-height:16px;}
 .viewer-note{color:var(--muted);font-size:12px;margin-top:16px;}
 
@@ -123,13 +121,13 @@ select option{background:#17223A;color:#EDEFF5;}
   color:var(--muted);font-size:13.5px;font-weight:500;border:none;background:transparent;text-align:left;width:100%;
   transition:background .15s, color .15s;
 }
-.nav-item:hover{background:rgba(255,255,255,0.03);color:var(--text);}
+.nav-item:hover{background:rgba(15,23,42,0.04);color:var(--text);}
 .nav-item.active{background:var(--gold-soft);color:var(--gold);}
 .nav-item svg{width:17px;height:17px;flex-shrink:0;}
 .sidebar-foot{margin-top:auto;padding:0 6px;}
 .role-pill{
   display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 10px;border-radius:100px;
-  background:rgba(255,255,255,0.04);border:1px solid var(--hairline);color:var(--muted);margin-bottom:10px;
+  background:rgba(15,23,42,0.05);border:1px solid var(--hairline);color:var(--muted);margin-bottom:10px;
 }
 .sync-status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:10px;}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);}
@@ -157,12 +155,12 @@ select option{background:#17223A;color:#EDEFF5;}
   transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
   perspective:800px;
 }
-.card.tilt:hover{transform:translateY(-3px) rotateX(2deg);box-shadow:var(--shadow);border-color:rgba(201,162,39,0.4);}
+.card.tilt:hover{transform:translateY(-3px) rotateX(2deg);box-shadow:var(--shadow);border-color:rgba(99,102,241,0.4);}
 .stat-card .icon{
   width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;
   background:var(--gold-soft);color:var(--gold);
 }
-.stat-card .num{font-family:'Fraunces',serif;font-size:30px;font-weight:600;}
+.stat-card .num{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:30px;font-weight:600;}
 .stat-card .label{color:var(--muted);font-size:12.5px;margin-top:4px;letter-spacing:0.2px;}
 
 .emp-card{
@@ -172,13 +170,13 @@ select option{background:#17223A;color:#EDEFF5;}
   transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .emp-card.noncapf{border-left-color:var(--noncapf);}
-.emp-card.capf{border-left-color:var(--capf); background:linear-gradient(160deg, rgba(91,127,219,0.07), var(--surface-2));}
-.emp-card.noncapf{background:linear-gradient(160deg, rgba(47,184,138,0.07), var(--surface-2));}
+.emp-card.capf{border-left-color:var(--capf); background:linear-gradient(160deg, rgba(99,102,241,0.07), var(--surface-2));}
+.emp-card.noncapf{background:linear-gradient(160deg, rgba(16,185,129,0.07), var(--surface-2));}
 .emp-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
 .emp-card .name{font-size:15px;font-weight:600;}
 .emp-card .desig{color:var(--muted);font-size:12px;margin-top:2px;margin-bottom:12px;}
 .emp-card .bal-row{display:flex;gap:8px;flex-wrap:wrap;}
-.emp-card .bal{background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;text-align:center;min-width:52px;}
+.emp-card .bal{background:rgba(15,23,42,0.05);border-radius:8px;padding:6px 10px;text-align:center;min-width:52px;}
 .emp-card .bal .v{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;}
 .emp-card .bal .v.neg{color:var(--danger);}
 .emp-card .bal .k{font-size:10px;color:var(--muted);margin-top:1px;}
@@ -188,7 +186,7 @@ select option{background:#17223A;color:#EDEFF5;}
 /* birthday widgets — secondary visual weight */
 .bday-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
 .bday-chip{
-  flex-shrink:0;background:rgba(255,255,255,0.03);border:1px solid var(--hairline);border-radius:12px;
+  flex-shrink:0;background:rgba(15,23,42,0.04);border:1px solid var(--hairline);border-radius:12px;
   padding:10px 14px;min-width:150px;font-size:12.5px;
 }
 .bday-chip .who{font-weight:600;font-size:13px;}
@@ -202,17 +200,17 @@ select option{background:#17223A;color:#EDEFF5;}
 .toolbar .spacer{flex:1;}
 .emp-table{width:100%;border-collapse:collapse;font-size:13.5px;}
 .emp-table th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px;padding:10px 12px;border-bottom:1px solid var(--hairline);}
-.emp-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.emp-table td{padding:12px;border-bottom:1px solid rgba(15,23,42,0.04);}
 .emp-table tr{transition:background .15s;}
-.emp-table tbody tr:hover{background:rgba(255,255,255,0.02);cursor:pointer;}
+.emp-table tbody tr:hover{background:rgba(15,23,42,0.03);cursor:pointer;}
 .cadre-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;}
-.cadre-tag.capf{background:rgba(91,127,219,0.14);color:var(--capf);}
-.cadre-tag.noncapf{background:rgba(47,184,138,0.14);color:var(--noncapf);}
-.balance-pill{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,0.04);}
-.balance-pill.neg{color:var(--danger);background:rgba(228,99,111,0.12);}
+.cadre-tag.capf{background:rgba(99,102,241,0.14);color:var(--capf);}
+.cadre-tag.noncapf{background:rgba(16,185,129,0.14);color:var(--noncapf);}
+.balance-pill{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 7px;border-radius:6px;background:rgba(15,23,42,0.05);}
+.balance-pill.neg{color:var(--danger);background:rgba(239,68,68,0.12);}
 
 /* ============ Modal / drawer ============ */
-.overlay{position:fixed;inset:0;background:rgba(6,9,16,0.65);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
 .overlay.active{display:flex;}
 .modal{
   background:linear-gradient(165deg, var(--surface), var(--surface-2));border:1px solid var(--hairline);
@@ -226,11 +224,11 @@ select option{background:#17223A;color:#EDEFF5;}
 @media(max-width:560px){.form-row{grid-template-columns:1fr;}}
 .form-field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
 .form-field input, .form-field select, .form-field textarea{
-  width:100%;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--hairline);border-radius:9px;font-size:13.5px;
+  width:100%;padding:10px 12px;background:rgba(15,23,42,0.04);border:1px solid var(--hairline);border-radius:9px;font-size:13.5px;
 }
 .form-field textarea{resize:vertical;min-height:60px;}
 .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
-.warning-box{background:rgba(224,168,64,0.12);border:1px solid rgba(224,168,64,0.35);color:#F0CD8B;border-radius:10px;padding:11px 13px;font-size:12.5px;margin-bottom:14px;display:none;}
+.warning-box{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#92400e;border-radius:10px;padding:11px 13px;font-size:12.5px;margin-bottom:14px;display:none;}
 .warning-box.active{display:block;}
 
 /* ============ Profile / txn table ============ */
@@ -242,14 +240,14 @@ select option{background:#17223A;color:#EDEFF5;}
 .balance-chip .k{color:var(--muted);font-size:11px;margin-top:2px;}
 .txn-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
 .txn-table th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--hairline);}
-.txn-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.txn-table td{padding:10px;border-bottom:1px solid rgba(15,23,42,0.04);}
 .icon-btn{background:transparent;border:1px solid var(--hairline);border-radius:7px;padding:5px 8px;color:var(--muted);font-size:12px;}
 .icon-btn:hover{color:var(--gold);border-color:var(--gold);}
 
 /* Reports */
 .report-output{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:20px;margin-top:16px;font-size:13.5px;}
 .report-output table{width:100%;border-collapse:collapse;}
-.report-output th,.report-output td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:left;font-size:12.5px;}
+.report-output th,.report-output td{padding:8px 10px;border-bottom:1px solid rgba(15,23,42,0.06);text-align:left;font-size:12.5px;}
 
 .empty-state{color:var(--muted);font-size:13px;text-align:center;padding:40px 0;}
 .toast{
@@ -258,7 +256,7 @@ select option{background:#17223A;color:#EDEFF5;}
   display:flex;align-items:center;gap:10px;transform:translateY(20px);opacity:0;transition:all .3s;
 }
 .toast.show{transform:translateY(0);opacity:1;}
-.toast.err{border-color:rgba(228,99,111,0.4);}
+.toast.err{border-color:rgba(239,68,68,0.4);}
 .print-letterhead{display:none;}
 .grant-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--hairline);flex-wrap:wrap;}
 .grant-row:last-child{border-bottom:none;}
@@ -275,14 +273,14 @@ select option{background:#17223A;color:#EDEFF5;}
   .view{display:none !important;}
   .view.active{display:block !important;}
   .print-letterhead{display:block !important;text-align:center;margin-bottom:18px;border-bottom:2px solid #111;padding-bottom:12px;}
-  .print-letterhead .org{font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:#111;}
+  .print-letterhead .org{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;font-weight:700;color:#111;}
   .print-letterhead .sub{font-size:11.5px;color:#444;margin-top:2px;letter-spacing:0.4px;text-transform:uppercase;}
   .print-letterhead .gen{font-size:10.5px;color:#666;margin-top:6px;}
   .report-output, #profileCard{
     background:#fff !important;border:1px solid #ccc !important;box-shadow:none !important;color:#111 !important;
     padding:18px !important;
   }
-  .report-output h3, .profile-name{color:#111 !important;font-family:'Fraunces',serif;}
+  .report-output h3, .profile-name{color:#111 !important;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;}
   .report-output table, .txn-table{width:100%;border-collapse:collapse;margin-top:10px;}
   .report-output th,.report-output td,.txn-table th,.txn-table td{
     border:1px solid #999 !important;color:#111 !important;padding:6px 9px;font-size:11.5px;background:#fff !important;
@@ -1118,7 +1116,7 @@ function renderProfile(empId){
       <td>${leaveTypeLabel(t.LeaveType)}</td>
       <td>${fmtDate(t.StartDate)}</td>
       <td>${fmtDate(t.EndDate)}</td>
-      <td>${t.Days}</td>
+      <td>${txnDaysDisplay(t)}</td>
       <td>${t.Reason||''}</td>
       <td>${t.EnteredBy||''}</td>
       <td>${canEditTxn?`<button class="icon-btn" data-edit="${t.TxnID}">Edit</button>`:''} ${canDeleteTxn?`<button class="icon-btn" data-del="${t.TxnID}">Delete</button>`:''}</td>
@@ -1326,12 +1324,22 @@ function populateReportSelects(){
   document.getElementById('repEmp2').innerHTML = opts;
   if(!document.getElementById('repDate').value) document.getElementById('repDate').value = todayISO();
 }
+function txnDaysDisplay(t){
+  if(t.LeaveType==='AutoCredit'){
+    const parts=[];
+    if(Number(t.EL_Delta||0)) parts.push('+'+t.EL_Delta+' EL');
+    if(Number(t.HPL_Delta||0)) parts.push('+'+t.HPL_Delta+' HPL');
+    return parts.join(', ') || '—';
+  }
+  return t.Days;
+}
 document.getElementById('runSummaryBtn').onclick = ()=>{
   const empId = document.getElementById('repEmp').value;
   const asOn = document.getElementById('repDate').value;
   const e = STATE.employees.find(x=>x.EmpID===empId); if(!e) return;
   const b = reconstructBalanceAsOn(e, asOn);
-  const txnsUpto = STATE.transactions.filter(t=>t.EmpID===empId && (t.StartDate||'').slice(0,10) <= asOn && t.LeaveType!=='AutoCredit');
+  const txnsUpto = STATE.transactions.filter(t=>t.EmpID===empId && (t.StartDate||'').slice(0,10) <= asOn)
+    .sort((a,b)=>new Date(a.StartDate)-new Date(b.StartDate));
   const out = document.getElementById('reportOutput');
   out.style.display='block';
   document.getElementById('reportGenAt').textContent = e.Name + ' · Generated ' + new Date().toLocaleString('en-IN') + ' · As on ' + fmtDate(asOn);
@@ -1345,13 +1353,14 @@ document.getElementById('runSummaryBtn').onclick = ()=>{
       ${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`<div class="balance-chip"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}
     </div>
     <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th></tr></thead>
-    <tbody>${txnsUpto.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${t.Days}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions.</td></tr>'}</tbody></table>`;
+    <tbody>${txnsUpto.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${txnDaysDisplay(t)}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions.</td></tr>'}</tbody></table>`;
 };
 document.getElementById('printStmtBtn').onclick = ()=>{
   const empId = document.getElementById('repEmp2').value;
   const from = document.getElementById('repFrom').value, to = document.getElementById('repTo').value;
   const e = STATE.employees.find(x=>x.EmpID===empId); if(!e || !from || !to) { toast('Select employee and date range.', true); return; }
-  const txns = STATE.transactions.filter(t=>t.EmpID===empId && t.LeaveType!=='AutoCredit' && (t.StartDate||'').slice(0,10)>=from && (t.StartDate||'').slice(0,10)<=to);
+  const txns = STATE.transactions.filter(t=>t.EmpID===empId && (t.StartDate||'').slice(0,10)>=from && (t.StartDate||'').slice(0,10)<=to)
+    .sort((a,b)=>new Date(a.StartDate)-new Date(b.StartDate));
   const b = reconstructBalanceAsOn(e, to);
   const out = document.getElementById('reportOutput');
   out.style.display='block';
@@ -1361,7 +1370,7 @@ document.getElementById('printStmtBtn').onclick = ()=>{
     <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px;">${fmtDate(from)} to ${fmtDate(to)} · ${e.Designation}, ${e.Cadre}, ${e.PayLevel}</div>
     ${b?`<div class="balances-strip">${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`<div class="balance-chip"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}</div><div style="color:var(--muted);font-size:11.5px;margin:6px 0 12px;">Balance as on ${fmtDate(to)}</div>`:''}
     <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th></tr></thead>
-    <tbody>${txns.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${t.Days}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions in range.</td></tr>'}</tbody></table>`;
+    <tbody>${txns.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${txnDaysDisplay(t)}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions in range.</td></tr>'}</tbody></table>`;
   setTimeout(()=>window.print(), 300);
 };
 document.getElementById('elhplBtn') && (document.getElementById('elhplBtn').onclick = null);
