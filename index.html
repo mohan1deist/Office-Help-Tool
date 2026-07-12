@@ -36,29 +36,34 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f2f8;color:#1e293b
 .stat-pill-lbl{font-size:0.62rem;color:#94a3b8;margin-top:2px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;}
 
 /* ── CARDS ── */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;width:100%;margin-bottom:32px;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;width:100%;margin-bottom:20px;}
+.cards-row2{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;width:100%;margin-bottom:32px;}
 .app-card{border-radius:22px;overflow:hidden;text-decoration:none;color:#1e293b;background:#fff;border:1.5px solid #e2e8f0;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:transform 0.3s cubic-bezier(.22,.68,0,1.2),box-shadow 0.3s ease;cursor:pointer;display:block;}
 .app-card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
 .card-top{height:7px;}
 .card-blue .card-top{background:linear-gradient(90deg,#6366f1,#06b6d4);}
 .card-green .card-top{background:linear-gradient(90deg,#10b981,#06b6d4);}
 .card-orange .card-top{background:linear-gradient(90deg,#f59e0b,#ef4444);}
+.card-purple .card-top{background:linear-gradient(90deg,#a855f7,#ec4899);}
 .card-content{padding:26px 26px 24px;}
 .card-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:18px;transition:transform 0.3s;}
 .app-card:hover .card-icon{transform:scale(1.12) rotate(-4deg);}
 .card-blue .card-icon{background:#eef2ff;}
 .card-green .card-icon{background:#ecfdf5;}
 .card-orange .card-icon{background:#fffbeb;}
+.card-purple .card-icon{background:#faf5ff;}
 .card-label{font-size:0.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
 .card-blue .card-label{color:#6366f1;}
 .card-green .card-label{color:#10b981;}
 .card-orange .card-label{color:#f59e0b;}
+.card-purple .card-label{color:#a855f7;}
 .card-title{font-size:1.1rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.3px;color:#0f172a;}
 .card-desc{font-size:0.8rem;color:#64748b;line-height:1.65;margin-bottom:20px;}
 .card-cta{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:700;padding:8px 16px;border-radius:10px;transition:gap 0.2s;}
 .card-blue .card-cta{background:#eef2ff;color:#4f46e5;}
 .card-green .card-cta{background:#ecfdf5;color:#059669;}
 .card-orange .card-cta{background:#fffbeb;color:#d97706;}
+.card-purple .card-cta{background:#faf5ff;color:#9333ea;}
 .app-card:hover .card-cta{gap:10px;}
 .coming-tag{font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:#fef9c3;border:1px solid #fde68a;color:#92400e;padding:6px 14px;border-radius:20px;}
 
@@ -71,6 +76,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f2f8;color:#1e293b
 .widget-val.green{color:#10b981;}
 .widget-val.amber{color:#f59e0b;}
 .widget-val.red{color:#ef4444;}
+.widget-val.purple{color:#a855f7;}
 .widget-lbl{font-size:0.75rem;font-weight:700;color:#1e293b;margin-bottom:2px;}
 .widget-sub{font-size:0.68rem;color:#94a3b8;}
 
@@ -84,7 +90,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f2f8;color:#1e293b
 footer{text-align:center;padding:20px;color:#cbd5e1;font-size:0.75rem;border-top:1px solid #e2e8f0;background:#fff;}
 
 @media(max-width:900px){
-  .cards{grid-template-columns:1fr;}
+  .cards, .cards-row2{grid-template-columns:1fr;}
   .widgets{grid-template-columns:1fr 1fr;}
   .hero-h1{font-size:2.6rem;letter-spacing:-1px;}
   .topbar{padding:0 20px;}
@@ -113,7 +119,7 @@ footer{text-align:center;padding:20px;color:#cbd5e1;font-size:0.75rem;border-top
 <main class="hero">
   <div class="hero-tag"><span class="hero-tag-dot"></span>Personal Productivity Dashboard</div>
   <h1 class="hero-h1">Your Work,<br><span class="accent">Simplified.</span></h1>
-  <p class="hero-sub">A unified command center for managing travel bills, government contracts, and product orders — built just for you.</p>
+  <p class="hero-sub">A unified command center for managing travel bills, government contracts, product orders, and employee leave — built just for you.</p>
 
   <!-- LIVE STATS -->
   <div class="stats-row" id="statsRow">
@@ -183,6 +189,20 @@ footer{text-align:center;padding:20px;color:#cbd5e1;font-size:0.75rem;border-top
         <div class="card-label">Orders Manager</div>
         <div class="card-title">Product Orders Tracking</div>
         <div class="card-desc">Manage product orders, track delivery status, and maintain a complete order history in one place.</div>
+        <div class="card-cta">Open Tool →</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- SECOND ROW OF APP CARDS -->
+  <div class="cards-row2">
+    <a class="app-card card-purple" href="leave-management.html">
+      <div class="card-top"></div>
+      <div class="card-content">
+        <div class="card-icon">🗓️</div>
+        <div class="card-label">HR Tool</div>
+        <div class="card-title">Leave Management System</div>
+        <div class="card-desc">Track employee leave balances, process EL/HPL/CL entries, run auto-credits, and generate printable leave statements — all synced live with Google Sheets.</div>
         <div class="card-cta">Open Tool →</div>
       </div>
     </a>
