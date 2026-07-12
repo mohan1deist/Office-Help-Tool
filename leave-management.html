@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC NWR · Leave Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1220;
+  --surface:#121B2E;
+  --surface-2:#17223A;
+  --hairline:rgba(201,162,39,0.22);
+  --gold:#C9A227;
+  --gold-soft:rgba(201,162,39,0.14);
+  --capf:#5B7FDB;
+  --noncapf:#2FB88A;
+  --text:#EDEFF5;
+  --muted:#8B93A7;
+  --danger:#E4636F;
+  --warn:#E0A840;
+  --ok:#2FB88A;
+  --radius:16px;
+  --shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+  font-family:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(91,127,219,0.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(47,184,138,0.08), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:'Fraunces',serif;}
+::selection{background:var(--gold-soft);}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:4px;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;color:var(--text);}
+a{color:inherit;}
+@media (prefers-reduced-motion: reduce){*{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}}
+
+/* ============ SEAL — signature element ============ */
+.seal{
+  width:46px;height:46px;border-radius:50%;
+  background: conic-gradient(from 220deg, #C9A227, #E7CE7A, #C9A227, #8f7419, #C9A227);
+  display:flex;align-items:center;justify-content:center;
+  position:relative; flex-shrink:0;
+  box-shadow: 0 0 0 1px rgba(201,162,39,0.4), 0 8px 20px -6px rgba(201,162,39,0.5);
+}
+.seal::before{
+  content:'';position:absolute;inset:4px;border-radius:50%;
+  background:var(--bg);
+  border:1px solid rgba(201,162,39,0.35);
+}
+.seal .mark{position:relative;font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--gold);}
+.seal.stamping{animation:stamp 0.7s cubic-bezier(.36,1.8,.4,1) 1;}
+@keyframes stamp{
+  0%{transform:scale(1) rotate(0deg);}
+  35%{transform:scale(0.82) rotate(-6deg);}
+  55%{transform:scale(1.12) rotate(3deg);}
+  100%{transform:scale(1) rotate(0deg);}
+}
+.seal.syncing .mark{animation:spin-slow 1.4s linear infinite;}
+@keyframes spin-slow{to{transform:rotate(360deg);}}
+
+/* ============ Login ============ */
+.login-screen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+.login-card{
+  width:100%;max-width:420px;background:linear-gradient(180deg, var(--surface), var(--surface-2));
+  border:1px solid var(--hairline); border-radius:20px; padding:40px 36px;
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+.login-card .seal{margin:0 auto 18px;width:64px;height:64px;}
+.login-card .seal .mark{font-size:20px;}
+.login-card h1{font-size:26px;font-weight:600;letter-spacing:0.2px;}
+.login-card .sub{color:var(--muted);font-size:13px;margin-top:6px;letter-spacing:0.4px;text-transform:uppercase;}
+.login-tabs{display:flex;gap:8px;margin:28px 0 18px;background:rgba(255,255,255,0.03);border:1px solid var(--hairline);border-radius:12px;padding:4px;}
+.login-tab{flex:1;padding:9px 0;border:none;background:transparent;color:var(--muted);border-radius:9px;font-size:13px;font-weight:600;transition:all .2s;}
+.login-tab.active{background:var(--gold-soft);color:var(--gold);}
+.login-card input{
+  width:100%;padding:13px 14px;background:rgba(255,255,255,0.03);
+  border:1px solid var(--hairline);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:14px;
+}
+.login-card input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+select{color-scheme:dark;}
+select option{background:#17223A;color:#EDEFF5;}
+.btn{
+  border:none;border-radius:10px;padding:13px 18px;font-size:14px;font-weight:600;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.btn-primary{background:linear-gradient(180deg,#D8B849,var(--gold));color:#1a1406;width:100%;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(201,162,39,0.6);}
+.btn-ghost{background:transparent;border:1px solid var(--hairline);color:var(--text);}
+.btn-ghost:hover{border-color:var(--gold);}
+.btn-danger{background:rgba(228,99,111,0.14);color:#F0929B;border:1px solid rgba(228,99,111,0.35);}
+.login-err{color:var(--danger);font-size:12.5px;margin-top:-4px;margin-bottom:10px;min-height:16px;}
+.viewer-note{color:var(--muted);font-size:12px;margin-top:16px;}
+
+/* ============ App shell ============ */
+.app{display:none;min-height:100vh;grid-template-columns:250px 1fr;}
+.app.active{display:grid;}
+.sidebar{
+  background:var(--surface);border-right:1px solid var(--hairline);
+  padding:22px 16px;display:flex;flex-direction:column;gap:22px;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:0 6px;}
+.brand .name{font-size:14.5px;font-weight:600;line-height:1.25;}
+.brand .name small{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:2px;letter-spacing:0.3px;}
+.nav{display:flex;flex-direction:column;gap:3px;}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
+  color:var(--muted);font-size:13.5px;font-weight:500;border:none;background:transparent;text-align:left;width:100%;
+  transition:background .15s, color .15s;
+}
+.nav-item:hover{background:rgba(255,255,255,0.03);color:var(--text);}
+.nav-item.active{background:var(--gold-soft);color:var(--gold);}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;}
+.sidebar-foot{margin-top:auto;padding:0 6px;}
+.role-pill{
+  display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 10px;border-radius:100px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--hairline);color:var(--muted);margin-bottom:10px;
+}
+.sync-status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ok);}
+.dot.pending{background:var(--warn);}
+
+.main{padding:26px 32px;overflow-x:hidden;}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
+.topbar h2{font-size:24px;font-weight:600;}
+.topbar .date{color:var(--muted);font-size:13px;margin-top:4px;}
+.view{display:none;}
+.view.active{display:block;animation:fadein .35s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============ Cards / grid ============ */
+.grid{display:grid;gap:16px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:680px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+.card{
+  background:linear-gradient(160deg, var(--surface), var(--surface-2));
+  border:1px solid var(--hairline);border-radius:var(--radius);padding:20px;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  perspective:800px;
+}
+.card.tilt:hover{transform:translateY(-3px) rotateX(2deg);box-shadow:var(--shadow);border-color:rgba(201,162,39,0.4);}
+.stat-card .icon{
+  width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+  background:var(--gold-soft);color:var(--gold);
+}
+.stat-card .num{font-family:'Fraunces',serif;font-size:30px;font-weight:600;}
+.stat-card .label{color:var(--muted);font-size:12.5px;margin-top:4px;letter-spacing:0.2px;}
+
+.emp-card{
+  background:linear-gradient(160deg, var(--surface), var(--surface-2));
+  border:1px solid var(--hairline); border-left:4px solid var(--capf);
+  border-radius:14px; padding:16px 18px; cursor:pointer;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.emp-card.noncapf{border-left-color:var(--noncapf);}
+.emp-card.capf{border-left-color:var(--capf); background:linear-gradient(160deg, rgba(91,127,219,0.07), var(--surface-2));}
+.emp-card.noncapf{background:linear-gradient(160deg, rgba(47,184,138,0.07), var(--surface-2));}
+.emp-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.emp-card .name{font-size:15px;font-weight:600;}
+.emp-card .desig{color:var(--muted);font-size:12px;margin-top:2px;margin-bottom:12px;}
+.emp-card .bal-row{display:flex;gap:8px;flex-wrap:wrap;}
+.emp-card .bal{background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;text-align:center;min-width:52px;}
+.emp-card .bal .v{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;}
+.emp-card .bal .v.neg{color:var(--danger);}
+.emp-card .bal .k{font-size:10px;color:var(--muted);margin-top:1px;}
+.section-title{font-size:15px;font-weight:600;margin:28px 0 14px;display:flex;align-items:center;gap:8px;}
+.section-title .rule{flex:1;height:1px;background:var(--hairline);}
+
+/* birthday widgets — secondary visual weight */
+.bday-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;}
+.bday-chip{
+  flex-shrink:0;background:rgba(255,255,255,0.03);border:1px solid var(--hairline);border-radius:12px;
+  padding:10px 14px;min-width:150px;font-size:12.5px;
+}
+.bday-chip .who{font-weight:600;font-size:13px;}
+.bday-chip .when{color:var(--muted);margin-top:2px;}
+
+/* ============ Employee list ============ */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+.toolbar select, .toolbar input{
+  background:var(--surface);border:1px solid var(--hairline);border-radius:9px;padding:9px 12px;font-size:13px;color:var(--text);
+}
+.toolbar .spacer{flex:1;}
+.emp-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.emp-table th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px;padding:10px 12px;border-bottom:1px solid var(--hairline);}
+.emp-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.emp-table tr{transition:background .15s;}
+.emp-table tbody tr:hover{background:rgba(255,255,255,0.02);cursor:pointer;}
+.cadre-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;}
+.cadre-tag.capf{background:rgba(91,127,219,0.14);color:var(--capf);}
+.cadre-tag.noncapf{background:rgba(47,184,138,0.14);color:var(--noncapf);}
+.balance-pill{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,0.04);}
+.balance-pill.neg{color:var(--danger);background:rgba(228,99,111,0.12);}
+
+/* ============ Modal / drawer ============ */
+.overlay{position:fixed;inset:0;background:rgba(6,9,16,0.65);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.overlay.active{display:flex;}
+.modal{
+  background:linear-gradient(165deg, var(--surface), var(--surface-2));border:1px solid var(--hairline);
+  border-radius:18px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow);
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--hairline);position:sticky;top:0;background:inherit;z-index:2;}
+.modal-head h3{font-size:17px;font-weight:600;}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:20px;}
+.modal-body{padding:22px 24px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+.form-field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
+.form-field input, .form-field select, .form-field textarea{
+  width:100%;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--hairline);border-radius:9px;font-size:13.5px;
+}
+.form-field textarea{resize:vertical;min-height:60px;}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+.warning-box{background:rgba(224,168,64,0.12);border:1px solid rgba(224,168,64,0.35);color:#F0CD8B;border-radius:10px;padding:11px 13px;font-size:12.5px;margin-bottom:14px;display:none;}
+.warning-box.active{display:block;}
+
+/* ============ Profile / txn table ============ */
+.profile-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+.profile-name{font-size:22px;font-weight:600;}
+.balances-strip{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0;}
+.balance-chip{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:12px 16px;min-width:100px;}
+.balance-chip .v{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;}
+.balance-chip .k{color:var(--muted);font-size:11px;margin-top:2px;}
+.txn-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+.txn-table th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--hairline);}
+.txn-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.icon-btn{background:transparent;border:1px solid var(--hairline);border-radius:7px;padding:5px 8px;color:var(--muted);font-size:12px;}
+.icon-btn:hover{color:var(--gold);border-color:var(--gold);}
+
+/* Reports */
+.report-output{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:20px;margin-top:16px;font-size:13.5px;}
+.report-output table{width:100%;border-collapse:collapse;}
+.report-output th,.report-output td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:left;font-size:12.5px;}
+
+.empty-state{color:var(--muted);font-size:13px;text-align:center;padding:40px 0;}
+.toast{
+  position:fixed;bottom:22px;right:22px;background:var(--surface-2);border:1px solid var(--hairline);
+  padding:13px 18px;border-radius:11px;font-size:13px;box-shadow:var(--shadow);z-index:200;
+  display:flex;align-items:center;gap:10px;transform:translateY(20px);opacity:0;transition:all .3s;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.err{border-color:rgba(228,99,111,0.4);}
+.print-letterhead{display:none;}
+.grant-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--hairline);flex-wrap:wrap;}
+.grant-row:last-child{border-bottom:none;}
+.grant-info .name{font-size:13.5px;font-weight:600;}
+.grant-info .status{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.grant-info .status.active{color:var(--ok);}
+.grant-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.grant-controls select, .grant-controls input{background:var(--surface);border:1px solid var(--hairline);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--text);}
+@media print{
+  body{background:#fff !important;color:#111 !important;}
+  .sidebar,.topbar,.toolbar,.overlay,#printProfileBtn,#addTxnBtn,.grid.grid-2,.card:has(#runSummaryBtn),.card:has(#printStmtBtn),.card:has(#elhplBtn),.card:has(#allBalBtn){display:none !important;}
+  .main{padding:0 !important;}
+  .app{display:block !important;}
+  .view{display:none !important;}
+  .view.active{display:block !important;}
+  .print-letterhead{display:block !important;text-align:center;margin-bottom:18px;border-bottom:2px solid #111;padding-bottom:12px;}
+  .print-letterhead .org{font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:#111;}
+  .print-letterhead .sub{font-size:11.5px;color:#444;margin-top:2px;letter-spacing:0.4px;text-transform:uppercase;}
+  .print-letterhead .gen{font-size:10.5px;color:#666;margin-top:6px;}
+  .report-output, #profileCard{
+    background:#fff !important;border:1px solid #ccc !important;box-shadow:none !important;color:#111 !important;
+    padding:18px !important;
+  }
+  .report-output h3, .profile-name{color:#111 !important;font-family:'Fraunces',serif;}
+  .report-output table, .txn-table{width:100%;border-collapse:collapse;margin-top:10px;}
+  .report-output th,.report-output td,.txn-table th,.txn-table td{
+    border:1px solid #999 !important;color:#111 !important;padding:6px 9px;font-size:11.5px;background:#fff !important;
+  }
+  .report-output th, .txn-table th{background:#f0f0f0 !important;font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:0.3px;}
+  .balance-chip, .balances-strip>*{background:#fff !important;border:1px solid #999 !important;color:#111 !important;}
+  .balance-chip .v{color:#111 !important;}
+  .cadre-tag{background:transparent !important;border:1px solid #999 !important;color:#111 !important;}
+  .icon-btn{display:none !important;}
+  a[href]:after{content:'';}
+}
+@media print{
+  .sidebar,.topbar,.toolbar,.overlay{display:none !important;}
+}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;height:64px;flex-direction:row;align-items:center;z-index:50;padding:8px 10px;}
+  .brand,.sidebar-foot{display:none;}
+  .nav{flex-direction:row;width:100%;justify-content:space-around;}
+  .nav-item span{display:none;}
+  .nav-item{padding:10px;}
+  .main{padding-bottom:90px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="seal"><span class="mark">SSC</span></div>
+    <h1>Leave Management</h1>
+    <div class="sub">SSC · Northern Western Region</div>
+    <div class="login-tabs">
+      <button class="login-tab active" data-role="admin">Admin</button>
+      <button class="login-tab" data-role="editor">Editor</button>
+      <button class="login-tab" data-role="viewer">Viewer</button>
+    </div>
+    <div id="loginPassWrap">
+      <input type="password" id="loginPass" placeholder="Password">
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn btn-primary" id="loginBtn">Continue</button>
+    <div class="viewer-note">Viewer access is read-only and open by default.</div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="seal" id="syncSeal"><span class="mark">SSC</span></div>
+      <div class="name">SSC NWR<small>Leave Management</small></div>
+    </div>
+    <nav class="nav" id="navMenu">
+      <button class="nav-item active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>Dashboard</span></button>
+      <button class="nav-item" data-view="employees"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M15.8 13.7c2.9.4 4.7 2.5 4.7 5.5"/></svg><span>Employees</span></button>
+      <button class="nav-item" data-view="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="M14 4v5a1 1 0 0 0 1 1h5"/><path d="M8 13h8M8 17h5"/></svg><span>Reports</span></button>
+      <button class="nav-item" data-view="archive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="5" rx="1.3"/><path d="M5 9v9a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18V9"/><path d="M10 13h4"/></svg><span>Archive</span></button>
+      <button class="nav-item" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1Z"/></svg><span>Settings</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="sync-status"><span class="dot" id="syncDot"></span><span id="syncText">Synced just now</span></div>
+      <div class="role-pill" id="rolePill">Viewer</div>
+      <button class="btn btn-ghost" style="width:100%" id="logoutBtn">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="topbar">
+        <div><h2>Dashboard</h2><div class="date" id="todayStr"></div></div>
+        <button class="btn btn-ghost" id="manualSyncBtn">↻ Sync now</button>
+      </div>
+      <div class="toolbar">
+        <select id="dashFilterCadre"><option value="all">All cadres</option><option value="CAPF">CAPF</option><option value="Non-CAPF">Non-CAPF</option></select>
+        <input type="text" id="dashSearch" placeholder="Search name / designation">
+      </div>
+      <div class="grid grid-4" id="dashEmpCards"></div>
+
+      <div class="section-title"><span>Retirements</span><div class="rule"></div></div>
+      <div class="grid grid-2">
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Retiring this year</div>
+          <div class="bday-row" id="retireYear"></div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Retiring within 1 year</div>
+          <div class="bday-row" id="retireOneYear"></div>
+        </div>
+      </div>
+
+      <div class="section-title"><span>Birthdays</span><div class="rule"></div></div>
+      <div class="grid grid-3">
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Today</div>
+          <div class="bday-row" id="bdayToday"></div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">This month</div>
+          <div class="bday-row" id="bdayMonth"></div>
+        </div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Next month</div>
+          <div class="bday-row" id="bdayNext"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMPLOYEES -->
+    <section class="view" id="view-employees">
+      <div class="topbar">
+        <div><h2>Employees</h2><div class="date" id="empCount"></div></div>
+        <button class="btn btn-primary" id="addEmpBtn" style="display:none">+ Add employee</button>
+      </div>
+      <div class="toolbar">
+        <select id="filterCadre"><option value="all">All cadres</option><option value="CAPF">CAPF</option><option value="Non-CAPF">Non-CAPF</option></select>
+        <select id="sortBy">
+          <option value="payLevel">Sort: Pay Level</option>
+          <option value="name">Sort: Name</option>
+          <option value="cadre">Sort: Cadre</option>
+          <option value="el">Sort: EL Balance</option>
+        </select>
+        <input type="text" id="searchEmp" placeholder="Search name / designation">
+        <div class="spacer"></div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="emp-table">
+          <thead><tr><th>Name</th><th>Cadre</th><th>Designation</th><th>Pay Level</th><th>EL</th><th>HPL</th><th>CL</th><th>RH</th></tr></thead>
+          <tbody id="empTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- EMPLOYEE PROFILE -->
+    <section class="view" id="view-profile">
+      <div class="topbar">
+        <button class="btn btn-ghost" id="backToEmp">← Back</button>
+      </div>
+      <div class="print-letterhead"><div class="org">SSC · Northern Western Region</div><div class="sub">Leave Management System — Employee Leave Statement</div><div class="gen" id="profileGenAt"></div></div>
+      <div class="card" id="profileCard"></div>
+      <div class="section-title" style="align-items:center;">
+        <span>Leave transactions</span><div class="rule"></div>
+        <button class="btn btn-ghost" id="printProfileBtn">🖨 Print summary</button>
+        <button class="btn btn-primary" id="addTxnBtn" style="display:none">+ Add leave entry</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="txn-table">
+          <thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Entered by</th><th></th></tr></thead>
+          <tbody id="txnTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="view" id="view-reports">
+      <div class="topbar"><h2>Reports</h2></div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:12px;">Leave summary as on date</h3>
+          <div class="form-field" style="margin-bottom:10px;"><label>Employee</label><select id="repEmp"></select></div>
+          <div class="form-field" style="margin-bottom:10px;"><label>As on date</label><input type="date" id="repDate"></div>
+          <button class="btn btn-primary" id="runSummaryBtn">Generate</button>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px;margin-bottom:12px;">Print leave statement</h3>
+          <div class="form-field" style="margin-bottom:10px;"><label>Employee</label><select id="repEmp2"></select></div>
+          <div class="form-row">
+            <div class="form-field"><label>From</label><input type="date" id="repFrom"></div>
+            <div class="form-field"><label>To</label><input type="date" id="repTo"></div>
+          </div>
+          <button class="btn btn-primary" id="printStmtBtn">Generate &amp; print</button>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <h3 style="font-size:15px;margin-bottom:6px;">Leave balance report — all types, as on any date</h3>
+        <div style="color:var(--muted);font-size:12.5px;margin-bottom:12px;">Reconstructs EL, HPL, CL, RH, SCL and Comp Off balances for every active employee as they stood on a chosen date, by reversing entries recorded after that date. Also useful for the 1 Jan / 1 Jul biannual snapshot.</div>
+        <div class="form-row" style="max-width:320px;">
+          <div class="form-field"><label>As on date</label><input type="date" id="asOnDate"></div>
+        </div>
+        <button class="btn btn-ghost" id="allBalBtn">Generate &amp; print</button>
+      </div>
+      <div class="print-letterhead"><div class="org">SSC · Northern Western Region</div><div class="sub">Leave Management System — Official Report</div><div class="gen" id="reportGenAt"></div></div>
+      <div class="report-output" id="reportOutput" style="display:none;"></div>
+    </section>
+
+    <!-- ARCHIVE -->
+    <section class="view" id="view-archive">
+      <div class="topbar"><h2>Archive</h2><div class="date">Employees removed from active roster</div></div>
+      <div style="overflow-x:auto;">
+        <table class="emp-table">
+          <thead><tr><th>Name</th><th>Cadre</th><th>Designation</th><th>Archived on</th><th></th></tr></thead>
+          <tbody id="archiveTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="topbar"><h2>Settings</h2></div>
+      <div class="card" style="max-width:480px;">
+        <h3 style="font-size:15px;margin-bottom:14px;">Change admin / editor password</h3>
+        <div style="color:var(--muted);font-size:12.5px;margin-bottom:12px;">Leave a field blank to keep its current password unchanged.</div>
+        <div class="form-field" style="margin-bottom:12px;"><label>New admin password</label><input type="text" id="adminPassInput" placeholder="Leave blank to keep current"></div>
+        <div class="form-field" style="margin-bottom:12px;"><label>New editor password</label><input type="text" id="editorPassInput" placeholder="Leave blank to keep current"></div>
+        <button class="btn btn-primary" id="saveRolePassBtn">Update passwords</button>
+      </div>
+      <div class="card" style="max-width:480px;margin-top:16px;">
+        <h3 style="font-size:15px;margin-bottom:14px;">Viewer password</h3>
+        <div style="color:var(--muted);font-size:12.5px;margin-bottom:12px;">Optional — leave blank to keep viewer access open with no password.</div>
+        <div class="form-field" style="margin-bottom:12px;"><input type="text" id="viewerPassInput" placeholder="Set viewer password (optional)"></div>
+        <button class="btn btn-primary" id="saveSettingsBtn">Save</button>
+      </div>
+      <div class="card" style="max-width:640px;margin-top:16px;">
+        <h3 style="font-size:15px;margin-bottom:6px;">Editor permissions</h3>
+        <div style="color:var(--muted);font-size:12.5px;margin-bottom:14px;">Grant an Editor temporary access to admin-only functions. Access automatically expires at the chosen time.</div>
+        <div id="grantList"></div>
+      </div>
+      <div class="card" style="max-width:480px;margin-top:16px;">
+        <h3 style="font-size:15px;margin-bottom:14px;">Backend</h3>
+        <div style="color:var(--muted);font-size:12.5px;">Data syncs automatically with Google Sheets every 5 minutes, and on every add / edit. Use "Sync now" on the dashboard to force an immediate sync.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ Employee modal ============ -->
+<div class="overlay" id="empModal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="empModalTitle">Add employee</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-field"><label>Name *</label><input id="f_name"></div>
+        <div class="form-field"><label>Gender *</label><select id="f_gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Cadre *</label><select id="f_cadre"><option value="">Select</option><option>CAPF</option><option>Non-CAPF</option></select></div>
+        <div class="form-field"><label>Designation *</label><input id="f_designation"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Pay Level *</label><select id="f_paylevel"></select></div>
+        <div class="form-field"><label>Leave balance as on</label><input type="date" id="f_balDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Date of Birth</label><input type="date" id="f_dob"></div>
+        <div class="form-field"><label>Retirement Date</label><input type="date" id="f_retire"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Basic Pay</label><input type="number" id="f_basic"></div>
+        <div class="form-field"><label>Remarks</label><input id="f_remarks"></div>
+      </div>
+      <div class="section-title" style="margin:18px 0 10px;font-size:13px;"><span>Opening balances</span><div class="rule"></div></div>
+      <div class="form-row">
+        <div class="form-field"><label>EL</label><input type="number" id="f_el" value="0"></div>
+        <div class="form-field"><label>HPL</label><input type="number" id="f_hpl" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>CL</label><input type="number" id="f_cl" value="0"></div>
+        <div class="form-field"><label>RH</label><input type="number" id="f_rh" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>SCL</label><input type="number" id="f_scl" value="0"></div>
+        <div class="form-field"><label>Comp Off</label><input type="number" id="f_compoff" value="0"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" data-close>Cancel</button>
+        <button class="btn btn-primary" id="saveEmpBtn">Save employee</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Leave entry modal ============ -->
+<div class="overlay" id="txnModal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="txnModalTitle">Add leave entry</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div class="warning-box" id="txnWarning"></div>
+      <div class="form-row">
+        <div class="form-field"><label>Leave type *</label>
+          <select id="t_type">
+            <option value="EL">Earned Leave (EL)</option>
+            <option value="CL">Casual Leave (CL)</option>
+            <option value="HPL">Half Pay Leave (HPL)</option>
+            <option value="Maternity">Maternity Leave</option>
+            <option value="Paternity">Paternity Leave</option>
+            <option value="RH">Restricted Holiday (RH)</option>
+            <option value="SCL">Special Casual Leave (SCL)</option>
+            <option value="CompOff">Compensatory Off (grant)</option>
+            <option value="Commuted">Commuted Leave</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Days *</label><input type="number" step="0.5" id="t_days"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>From date *</label><input type="date" id="t_from"></div>
+        <div class="form-field"><label>To date *</label><input type="date" id="t_to"></div>
+      </div>
+      <div class="form-field" id="t_against_wrap" style="display:none;margin-bottom:12px;"><label>Against date (duty performed)</label><input type="date" id="t_against"></div>
+      <div class="form-field" style="margin-bottom:12px;"><label>Reason / remarks</label><textarea id="t_reason"></textarea></div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" data-close>Cancel</button>
+        <button class="btn btn-primary" id="saveTxnBtn">Save entry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   CONFIG — paste your Apps Script Web App URL below (the combined script
+   URL you already use for My Office Hub).
+   ========================================================================= */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcKivMA2f9bhJ9dFPZNFXjYjheyLrN4HF_GL1CUlCct_APs6R3fs_MnwAf-LyMgZm0/exec";
+const PASSWORDS = { admin: "ssc@nwr", editor: "edit@nwr" };
+const PAY_LEVELS = Array.from({length:13}, (_,i)=>`Level ${i+1}`);
+
+let STATE = {
+  role: null, // 'viewer' | 'editor' | 'admin'
+  employees: [], transactions: [], archived: [], settings: {},
+  currentEmpId: null, editingTxnId: null,
+};
+
+/* ---------- Editor permission grants ---------- */
+const GRANTABLE_FUNCTIONS = [
+  {key:'archiveEmployee', label:'Archive employee'},
+  {key:'restoreEmployee', label:'Restore / purge archived employee'},
+  {key:'editTxn', label:'Edit leave transactions'},
+  {key:'deleteTxn', label:'Delete leave transactions'},
+  {key:'manageSettings', label:'Change settings & passwords'},
+];
+function getEditorGrants(){
+  try{ return JSON.parse(STATE.settings.editorGrants||'{}'); }catch(e){ return {}; }
+}
+function canDo(fnKey){
+  if(STATE.role==='admin') return true;
+  if(STATE.role!=='editor') return false;
+  const grants = getEditorGrants();
+  const exp = grants[fnKey];
+  return !!exp && new Date(exp) > new Date();
+}
+async function setGrant(fnKey, expiryISO){
+  const grants = getEditorGrants();
+  if(expiryISO) grants[fnKey] = expiryISO; else delete grants[fnKey];
+  STATE.settings.editorGrants = JSON.stringify(grants);
+  await apiPost('lms_updateSettings', {editorGrants: STATE.settings.editorGrants});
+  stampSeal();
+  renderGrantList();
+  applyRoleUI();
+}
+function durationToExpiry(value, customVal){
+  const now = new Date();
+  switch(value){
+    case '15m': return new Date(now.getTime()+15*60000).toISOString();
+    case '30m': return new Date(now.getTime()+30*60000).toISOString();
+    case '1h': return new Date(now.getTime()+60*60000).toISOString();
+    case '2h': return new Date(now.getTime()+2*60*60000).toISOString();
+    case '6h': return new Date(now.getTime()+6*60*60000).toISOString();
+    case 'today': { const d=new Date(); d.setHours(23,59,59,999); return d.toISOString(); }
+    case '1w': return new Date(now.getTime()+7*24*60*60000).toISOString();
+    case 'custom': return customVal ? new Date(customVal).toISOString() : null;
+    default: return null;
+  }
+}
+function renderGrantList(){
+  const wrap = document.getElementById('grantList');
+  if(!wrap) return;
+  const grants = getEditorGrants();
+  wrap.innerHTML = GRANTABLE_FUNCTIONS.map(f=>{
+    const exp = grants[f.key];
+    const active = exp && new Date(exp) > new Date();
+    return `
+    <div class="grant-row">
+      <div class="grant-info">
+        <div class="name">${f.label}</div>
+        <div class="status ${active?'active':''}">${active ? 'Active until '+new Date(exp).toLocaleString('en-IN') : 'Not granted'}</div>
+      </div>
+      <div class="grant-controls">
+        <select id="dur_${f.key}">
+          <option value="15m">15 min</option>
+          <option value="30m">30 min</option>
+          <option value="1h">1 hour</option>
+          <option value="2h">2 hours</option>
+          <option value="6h">6 hours</option>
+          <option value="today">Today</option>
+          <option value="1w">1 week</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input type="datetime-local" id="custom_${f.key}" style="display:none;">
+        <button class="btn btn-primary" style="padding:7px 12px;font-size:12px;" data-grant="${f.key}">Grant</button>
+        ${active?`<button class="btn btn-ghost" style="padding:7px 12px;font-size:12px;" data-revoke="${f.key}">Revoke</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  GRANTABLE_FUNCTIONS.forEach(f=>{
+    const sel = document.getElementById('dur_'+f.key);
+    const custom = document.getElementById('custom_'+f.key);
+    sel.addEventListener('change', ()=>{ custom.style.display = sel.value==='custom' ? 'inline-block':'none'; });
+  });
+  wrap.querySelectorAll('[data-grant]').forEach(b=>{
+    b.onclick = ()=>{
+      const key = b.dataset.grant;
+      const sel = document.getElementById('dur_'+key).value;
+      const custom = document.getElementById('custom_'+key).value;
+      const expiry = durationToExpiry(sel, custom);
+      if(!expiry){ toast('Pick a custom date/time first.', true); return; }
+      setGrant(key, expiry);
+      toast(GRANTABLE_FUNCTIONS.find(f=>f.key===key).label + ' granted.');
+    };
+  });
+  wrap.querySelectorAll('[data-revoke]').forEach(b=>{
+    b.onclick = ()=>{ setGrant(b.dataset.revoke, null); toast('Access revoked.'); };
+  });
+}
+
+/* ---------- Utilities ---------- */
+function uid(p){ return p+'_'+Date.now()+'_'+Math.floor(Math.random()*10000); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function fmtDate(d){ if(!d) return '—'; const dt = new Date(d); if(isNaN(dt)) return d; return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000)+1; }
+function toast(msg, isErr){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show'+(isErr?' err':'');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+function stampSeal(){
+  const s = document.getElementById('syncSeal');
+  s.classList.add('stamping'); setTimeout(()=>s.classList.remove('stamping'), 750);
+}
+
+/* ---------- Backend I/O (JSONP GET, no-cors text/plain POST) ---------- */
+function apiGet(action, params={}){
+  return new Promise((resolve,reject)=>{
+    const cb = 'cb_'+Date.now()+'_'+Math.floor(Math.random()*10000);
+    window[cb] = (res)=>{ delete window[cb]; script.remove(); res.ok?resolve(res.data):reject(res.error); };
+    const q = new URLSearchParams({action, callback:cb, ...params});
+    const script = document.createElement('script');
+    script.src = `${APPS_SCRIPT_URL}?${q.toString()}`;
+    script.onerror = ()=>{ delete window[cb]; reject('Network error'); };
+    document.body.appendChild(script);
+  });
+}
+function apiPost(action, payload={}){
+  return fetch(APPS_SCRIPT_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({action, payload}),
+    mode:'no-cors'
+  }).then(()=>true).catch(err=>{ console.error(err); return false; });
+}
+
+/* ---------- Sync ---------- */
+let syncTimer = null;
+async function pullFromSheet(){
+  document.getElementById('syncSeal').classList.add('syncing');
+  document.getElementById('syncDot').classList.add('pending');
+  document.getElementById('syncText').textContent = 'Syncing…';
+  try{
+    // Idempotent server-side check: only actually credits/expires leave on
+    // 1 Jan / 1 Jul / 31 Dec, and only once per year (tracked in Settings).
+    // Safe to call every sync — this is what makes rule #1 fire without
+    // depending on a separately configured Apps Script trigger.
+    await apiPost('lms_runCredits', {});
+    const data = await apiGet('lms_getAll');
+    STATE.employees = (data.employees||[]).map(normalizeEmp);
+    STATE.transactions = data.transactions||[];
+    STATE.archived = (data.archived||[]).map(normalizeEmp);
+    STATE.settings = data.settings||{};
+    document.getElementById('syncText').textContent = 'Synced ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    renderAll();
+  }catch(e){
+    document.getElementById('syncText').textContent = 'Sync failed — retrying';
+    console.error(e);
+  }finally{
+    document.getElementById('syncSeal').classList.remove('syncing');
+    document.getElementById('syncDot').classList.remove('pending');
+    stampSeal();
+  }
+}
+function normalizeEmp(e){
+  ['EL_Balance','HPL_Balance','CL_Balance','RH_Balance','SCL_Balance','CompOff_Balance','BasicPay'].forEach(k=>{
+    e[k] = e[k]===''||e[k]===undefined ? 0 : Number(e[k]);
+  });
+  return e;
+}
+function startAutoSync(){
+  pullFromSheet();
+  if(syncTimer) clearInterval(syncTimer);
+  syncTimer = setInterval(pullFromSheet, 5*60*1000); // every 5 minutes
+}
+
+/* ---------- Login ---------- */
+let selectedRole = 'admin';
+document.getElementById('loginPassWrap').style.display = 'block';
+document.querySelectorAll('.login-tab').forEach(tab=>{
+  tab.onclick = ()=>{
+    document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    selectedRole = tab.dataset.role;
+    document.getElementById('loginPassWrap').style.display = selectedRole==='viewer' && !STATE.settings.viewerPassword ? 'none':'block';
+    document.getElementById('loginErr').textContent='';
+  };
+});
+document.getElementById('loginBtn').onclick = async ()=>{
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  const adminPass = STATE.settings.adminPassword || PASSWORDS.admin;
+  const editorPass = STATE.settings.editorPassword || PASSWORDS.editor;
+  if(selectedRole==='admin' && pass!==adminPass){ err.textContent='Incorrect admin password.'; return; }
+  if(selectedRole==='editor' && pass!==editorPass){ err.textContent='Incorrect editor password.'; return; }
+  if(selectedRole==='viewer' && STATE.settings.viewerPassword && pass!==STATE.settings.viewerPassword){ err.textContent='Incorrect viewer password.'; return; }
+  STATE.role = selectedRole;
+  enterApp();
+};
+document.getElementById('logoutBtn').onclick = ()=>{
+  STATE.role = null;
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginScreen').style.display='flex';
+};
+
+// Try a light pre-fetch of settings so viewer-password gating works before full login (best-effort)
+apiGet('lms_getAll').then(d=>{ STATE.settings = d.settings||{}; }).catch(()=>{});
+
+function enterApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('rolePill').textContent = STATE.role.charAt(0).toUpperCase()+STATE.role.slice(1)+' access';
+  applyRoleUI();
+  document.getElementById('todayStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  startAutoSync();
+}
+function applyRoleUI(){
+  const canEdit = STATE.role==='admin' || STATE.role==='editor';
+  const isAdmin = STATE.role==='admin';
+  document.getElementById('addEmpBtn').style.display = canEdit ? 'inline-flex':'none';
+  document.getElementById('addTxnBtn').style.display = canEdit ? 'inline-flex':'none';
+  document.querySelector('[data-view="settings"]').style.display = (isAdmin || canDo('manageSettings')) ? 'flex':'none';
+  document.querySelector('[data-view="archive"]').style.display = canEdit ? 'flex':'none';
+  const grantSection = document.getElementById('grantList');
+  if(grantSection) grantSection.closest('.card').style.display = isAdmin ? 'block':'none';
+}
+
+/* ---------- Nav ---------- */
+document.getElementById('navMenu').addEventListener('click', e=>{
+  const btn = e.target.closest('.nav-item'); if(!btn) return;
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  if(btn.dataset.view==='employees') renderEmployeeTable();
+  if(btn.dataset.view==='archive') renderArchiveTable();
+  if(btn.dataset.view==='reports') populateReportSelects();
+});
+document.getElementById('manualSyncBtn').onclick = pullFromSheet;
+
+/* ---------- Render: dashboard ---------- */
+function renderAll(){
+  renderDashboard();
+  renderEmployeeTable();
+  renderArchiveTable();
+  populateReportSelects();
+  renderGrantList();
+  applyRoleUI();
+  if(STATE.currentEmpId) renderProfile(STATE.currentEmpId);
+}
+function renderDashboard(){
+  renderDashEmpCards();
+  renderRetireRow('retireYear', retireFilter('year'));
+  renderRetireRow('retireOneYear', retireFilter('oneYear'));
+  renderBdayRow('bdayToday', bdayFilter(0,'day'));
+  renderBdayRow('bdayMonth', bdayFilter(0,'month'));
+  renderBdayRow('bdayNext', bdayFilter(1,'month'));
+}
+function retireFilter(mode){
+  const now = new Date();
+  const oneYearOut = new Date(); oneYearOut.setFullYear(now.getFullYear()+1);
+  return STATE.employees.filter(e=>{
+    if(!e.RetirementDate) return false;
+    const d = new Date(e.RetirementDate); if(isNaN(d)) return false;
+    if(d < now) return false; // already retired
+    if(mode==='year') return d.getFullYear()===now.getFullYear();
+    return d <= oneYearOut;
+  }).sort((a,b)=>new Date(a.RetirementDate)-new Date(b.RetirementDate));
+}
+function renderRetireRow(elId, list){
+  const el = document.getElementById(elId);
+  if(!list.length){ el.innerHTML = `<div style="color:var(--muted);font-size:12.5px;">None</div>`; return; }
+  el.innerHTML = list.map(e=>{
+    const d = new Date(e.RetirementDate);
+    return `<div class="bday-chip"><div class="who">${e.Name}</div><div class="when">${d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div></div>`;
+  }).join('');
+}
+function renderDashEmpCards(){
+  const cadre = document.getElementById('dashFilterCadre').value;
+  const q = (document.getElementById('dashSearch').value||'').toLowerCase();
+  let list = STATE.employees.slice();
+  if(cadre!=='all') list = list.filter(e=>e.Cadre===cadre);
+  if(q) list = list.filter(e=>(e.Name||'').toLowerCase().includes(q)||(e.Designation||'').toLowerCase().includes(q));
+  list.sort((a,b)=>(a.Name||'').localeCompare(b.Name||''));
+  const wrap = document.getElementById('dashEmpCards');
+  wrap.innerHTML = list.map(e=>`
+    <div class="emp-card ${e.Cadre==='CAPF'?'capf':'noncapf'}" data-id="${e.EmpID}">
+      <div class="name">${e.Name}</div>
+      <div class="desig">${e.Designation||''} · ${e.Cadre}</div>
+      <div class="bal-row">
+        <div class="bal"><div class="v ${e.EL_Balance<0?'neg':''}">${e.EL_Balance}</div><div class="k">EL</div></div>
+        <div class="bal"><div class="v ${e.CL_Balance<0?'neg':''}">${e.CL_Balance}</div><div class="k">CL</div></div>
+        <div class="bal"><div class="v ${e.HPL_Balance<0?'neg':''}">${e.HPL_Balance}</div><div class="k">HPL</div></div>
+      </div>
+    </div>`).join('') || `<div class="empty-state">No employees to show.</div>`;
+  wrap.querySelectorAll('.emp-card').forEach(c=>{ c.onclick = ()=>openProfile(c.dataset.id); });
+}
+document.getElementById('dashFilterCadre').addEventListener('input', renderDashEmpCards);
+document.getElementById('dashSearch').addEventListener('input', renderDashEmpCards);
+function bdayFilter(offset, mode){
+  const now = new Date();
+  return STATE.employees.filter(e=>{
+    if(!e.DOB) return false;
+    const d = new Date(e.DOB); if(isNaN(d)) return false;
+    if(mode==='day'){
+      return d.getDate()===now.getDate() && d.getMonth()===now.getMonth();
+    } else {
+      let m = (now.getMonth()+offset)%12;
+      return d.getMonth()===m;
+    }
+  });
+}
+function renderBdayRow(elId, list){
+  const el = document.getElementById(elId);
+  if(!list.length){ el.innerHTML = `<div style="color:var(--muted);font-size:12.5px;">None</div>`; return; }
+  el.innerHTML = list.map(e=>{
+    const d = new Date(e.DOB);
+    return `<div class="bday-chip"><div class="who">${e.Name}</div><div class="when">${d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</div></div>`;
+  }).join('');
+}
+
+/* ---------- Render: employees table ---------- */
+function renderEmployeeTable(){
+  const cadre = document.getElementById('filterCadre').value;
+  const sortBy = document.getElementById('sortBy').value;
+  const q = (document.getElementById('searchEmp').value||'').toLowerCase();
+  let list = STATE.employees.slice();
+  if(cadre!=='all') list = list.filter(e=>e.Cadre===cadre);
+  if(q) list = list.filter(e=> (e.Name||'').toLowerCase().includes(q) || (e.Designation||'').toLowerCase().includes(q));
+  const levelNum = pl => Number((pl||'Level 1').replace(/\D/g,''))||0;
+  if(sortBy==='payLevel') list.sort((a,b)=>levelNum(b.PayLevel)-levelNum(a.PayLevel));
+  else if(sortBy==='name') list.sort((a,b)=>(a.Name||'').localeCompare(b.Name||''));
+  else if(sortBy==='cadre') list.sort((a,b)=>(a.Cadre||'').localeCompare(b.Cadre||''));
+  else if(sortBy==='el') list.sort((a,b)=>b.EL_Balance-a.EL_Balance);
+
+  document.getElementById('empCount').textContent = `${list.length} of ${STATE.employees.length} employees`;
+  document.getElementById('empTableBody').innerHTML = list.map(e=>`
+    <tr data-id="${e.EmpID}">
+      <td>${e.Name}</td>
+      <td><span class="cadre-tag ${e.Cadre==='CAPF'?'capf':'noncapf'}">${e.Cadre}</span></td>
+      <td>${e.Designation||''}</td>
+      <td>${e.PayLevel||''}</td>
+      <td><span class="balance-pill ${e.EL_Balance<0?'neg':''}">${e.EL_Balance}</span></td>
+      <td><span class="balance-pill ${e.HPL_Balance<0?'neg':''}">${e.HPL_Balance}</span></td>
+      <td><span class="balance-pill ${e.CL_Balance<0?'neg':''}">${e.CL_Balance}</span></td>
+      <td><span class="balance-pill ${e.RH_Balance<0?'neg':''}">${e.RH_Balance}</span></td>
+    </tr>`).join('') || `<tr><td colspan="8"><div class="empty-state">No employees match.</div></td></tr>`;
+
+  document.querySelectorAll('#empTableBody tr[data-id]').forEach(tr=>{
+    tr.onclick = ()=> openProfile(tr.dataset.id);
+  });
+}
+['filterCadre','sortBy','searchEmp'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', renderEmployeeTable);
+});
+
+/* ---------- Employee add/edit modal ---------- */
+const empModal = document.getElementById('empModal');
+document.getElementById('f_paylevel').innerHTML = PAY_LEVELS.map(l=>`<option>${l}</option>`).join('');
+let editingEmpId = null;
+document.getElementById('addEmpBtn').onclick = ()=>{
+  editingEmpId = null;
+  document.getElementById('empModalTitle').textContent='Add employee';
+  ['f_name','f_remarks'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_gender').value=''; document.getElementById('f_cadre').value='';
+  document.getElementById('f_designation').value=''; document.getElementById('f_paylevel').value='Level 1';
+  document.getElementById('f_balDate').value=todayISO();
+  document.getElementById('f_dob').value=''; document.getElementById('f_retire').value=''; document.getElementById('f_basic').value='';
+  ['f_el','f_hpl','f_cl','f_rh','f_scl','f_compoff'].forEach(id=>document.getElementById(id).value=0);
+  empModal.classList.add('active');
+};
+function toDateInputValue(v){
+  if(!v) return '';
+  return String(v).slice(0,10);
+}
+function openEditEmployee(emp){
+  editingEmpId = emp.EmpID;
+  document.getElementById('empModalTitle').textContent='Edit employee';
+  document.getElementById('f_name').value=emp.Name||'';
+  document.getElementById('f_gender').value=emp.Gender||'';
+  document.getElementById('f_cadre').value=emp.Cadre||'';
+  document.getElementById('f_designation').value=emp.Designation||'';
+  document.getElementById('f_paylevel').value=emp.PayLevel||'Level 1';
+  document.getElementById('f_balDate').value=toDateInputValue(emp.BalanceAsOnDate)||todayISO();
+  document.getElementById('f_dob').value=toDateInputValue(emp.DOB);
+  document.getElementById('f_retire').value=toDateInputValue(emp.RetirementDate);
+  document.getElementById('f_basic').value=emp.BasicPay||'';
+  document.getElementById('f_remarks').value=emp.Remarks||'';
+  document.getElementById('f_el').value=emp.EL_Balance||0;
+  document.getElementById('f_hpl').value=emp.HPL_Balance||0;
+  document.getElementById('f_cl').value=emp.CL_Balance||0;
+  document.getElementById('f_rh').value=emp.RH_Balance||0;
+  document.getElementById('f_scl').value=emp.SCL_Balance||0;
+  document.getElementById('f_compoff').value=emp.CompOff_Balance||0;
+  empModal.classList.add('active');
+}
+document.getElementById('saveEmpBtn').onclick = async ()=>{
+  const name = document.getElementById('f_name').value.trim();
+  const gender = document.getElementById('f_gender').value;
+  const cadre = document.getElementById('f_cadre').value;
+  const designation = document.getElementById('f_designation').value.trim();
+  if(!name || !gender || !cadre || !designation){ toast('Name, gender, cadre and designation are mandatory.', true); return; }
+  const emp = {
+    EmpID: editingEmpId || uid('EMP'),
+    Name:name, Gender:gender, Cadre:cadre, Designation:designation,
+    PayLevel: document.getElementById('f_paylevel').value,
+    BalanceAsOnDate: document.getElementById('f_balDate').value,
+    DOB: document.getElementById('f_dob').value,
+    RetirementDate: document.getElementById('f_retire').value,
+    BasicPay: Number(document.getElementById('f_basic').value)||0,
+    Remarks: document.getElementById('f_remarks').value,
+    EL_Balance: Number(document.getElementById('f_el').value)||0,
+    HPL_Balance: Number(document.getElementById('f_hpl').value)||0,
+    CL_Balance: Number(document.getElementById('f_cl').value)||0,
+    RH_Balance: Number(document.getElementById('f_rh').value)||0,
+    SCL_Balance: Number(document.getElementById('f_scl').value)||0,
+    CompOff_Balance: Number(document.getElementById('f_compoff').value)||0,
+    Status:'Active',
+  };
+  const idx = STATE.employees.findIndex(e=>e.EmpID===emp.EmpID);
+  if(idx>-1){
+    const preserved = STATE.employees[idx];
+    emp.Maternity_Used = preserved.Maternity_Used||0; emp.Paternity_Used = preserved.Paternity_Used||0;
+    emp.CreatedAt = preserved.CreatedAt;
+    // If the "balance as on" date was changed, this is a deliberate new
+    // opening-balance baseline — re-arm auto-credit so EL/HPL/CL/RH get
+    // forward-credited again from this new starting point on the next
+    // sync. If the date wasn't touched, keep the existing credit history
+    // so a routine edit (e.g. fixing a designation) doesn't accidentally
+    // double-credit leave that was already applied.
+    if(emp.BalanceAsOnDate && emp.BalanceAsOnDate !== preserved.BalanceAsOnDate){
+      emp.LastJanCreditYear = 0;
+      emp.LastJulCreditYear = 0;
+    } else {
+      emp.LastJanCreditYear = preserved.LastJanCreditYear;
+      emp.LastJulCreditYear = preserved.LastJulCreditYear;
+    }
+    STATE.employees[idx] = {...preserved, ...emp};
+    await apiPost('lms_updateEmployee', STATE.employees[idx]);
+  } else {
+    emp.Maternity_Used = 0; emp.Paternity_Used = 0;
+    STATE.employees.push(emp);
+    await apiPost('lms_addEmployee', emp);
+  }
+  stampSeal();
+  empModal.classList.remove('active');
+  await apiPost('lms_runCredits', {});
+  await pullFromSheet();
+  toast('Employee saved.');
+};
+
+/* ---------- Profile view ---------- */
+function openProfile(empId){
+  STATE.currentEmpId = empId;
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-profile').classList.add('active');
+  renderProfile(empId);
+}
+document.getElementById('backToEmp').onclick = ()=>{
+  document.getElementById('view-profile').classList.remove('active');
+  document.querySelector('[data-view="employees"]').classList.add('active');
+  document.getElementById('view-employees').classList.add('active');
+};
+function renderProfile(empId){
+  const e = STATE.employees.find(x=>x.EmpID===empId); if(!e) return;
+  document.getElementById('profileGenAt').textContent = e.Name + ' · Generated ' + new Date().toLocaleString('en-IN');
+  const canEdit = STATE.role==='admin' || STATE.role==='editor';
+  const canArchive = canDo('archiveEmployee');
+  const canEditTxn = canDo('editTxn');
+  const canDeleteTxn = canDo('deleteTxn');
+  document.getElementById('profileCard').innerHTML = `
+    <div class="profile-head">
+      <div>
+        <div class="profile-name">${e.Name}</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:4px;">${e.Designation} · <span class="cadre-tag ${e.Cadre==='CAPF'?'capf':'noncapf'}" style="margin-left:2px;">${e.Cadre}</span></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        ${canEdit?`<button class="btn btn-ghost" id="editEmpBtn">Edit profile</button>`:''}
+        ${canArchive?`<button class="btn btn-danger" id="archiveEmpBtn">Archive</button>`:''}
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:18px;font-size:13px;color:var(--muted);margin-top:10px;">
+      <div>Gender: <span style="color:var(--text)">${e.Gender||'—'}</span></div>
+      <div>Pay Level: <span style="color:var(--text)">${e.PayLevel||'—'}</span></div>
+      <div>DOB: <span style="color:var(--text)">${fmtDate(e.DOB)}</span></div>
+      <div>Retirement: <span style="color:var(--text)">${fmtDate(e.RetirementDate)}</span></div>
+      <div>Basic Pay: <span style="color:var(--text)">${e.BasicPay?('₹'+e.BasicPay):'—'}</span></div>
+    </div>
+    ${e.Remarks?`<div style="margin-top:10px;font-size:13px;color:var(--muted);">Remarks: <span style="color:var(--text)">${e.Remarks}</span></div>`:''}
+    <div class="balances-strip">
+      ${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`
+        <div class="balance-chip"><div class="v" style="color:${e[k+'_Balance']<0?'var(--danger)':'var(--text)'}">${e[k+'_Balance']}</div><div class="k">${k}</div></div>
+      `).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--muted);">Live balance as on ${fmtDate(todayISO())} · opening balance was recorded as on ${fmtDate(e.BalanceAsOnDate)}</div>
+  `;
+  if(canEdit) document.getElementById('editEmpBtn').onclick = ()=>openEditEmployee(e);
+  if(canArchive){
+    document.getElementById('archiveEmpBtn').onclick = async ()=>{
+      if(!confirm(`Archive ${e.Name}? Their record moves to Archive and can be restored later.`)) return;
+      await apiPost('lms_archiveEmployee', {empId:e.EmpID, by:STATE.role});
+      STATE.employees = STATE.employees.filter(x=>x.EmpID!==e.EmpID);
+      stampSeal(); toast('Employee archived.');
+      document.getElementById('view-profile').classList.remove('active');
+      document.querySelector('[data-view="employees"]').classList.add('active');
+      document.getElementById('view-employees').classList.add('active');
+      renderAll();
+    };
+  }
+
+  const myTxns = STATE.transactions.filter(t=>t.EmpID===empId).sort((a,b)=>new Date(b.StartDate)-new Date(a.StartDate));
+  document.getElementById('txnTableBody').innerHTML = myTxns.map(t=>`
+    <tr>
+      <td>${leaveTypeLabel(t.LeaveType)}</td>
+      <td>${fmtDate(t.StartDate)}</td>
+      <td>${fmtDate(t.EndDate)}</td>
+      <td>${t.Days}</td>
+      <td>${t.Reason||''}</td>
+      <td>${t.EnteredBy||''}</td>
+      <td>${canEditTxn?`<button class="icon-btn" data-edit="${t.TxnID}">Edit</button>`:''} ${canDeleteTxn?`<button class="icon-btn" data-del="${t.TxnID}">Delete</button>`:''}</td>
+    </tr>`).join('') || `<tr><td colspan="7"><div class="empty-state">No leave entries yet.</div></td></tr>`;
+
+  if(canEditTxn){
+    document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEditTxn(b.dataset.edit));
+  }
+  if(canDeleteTxn){
+    document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
+      if(!confirm('Delete this leave entry? This will restore the balance.')) return;
+      const t = STATE.transactions.find(x=>x.TxnID===b.dataset.del);
+      reverseTxnEffect(t);
+      STATE.transactions = STATE.transactions.filter(x=>x.TxnID!==b.dataset.del);
+      await apiPost('lms_deleteTxn', {txnId:b.dataset.del});
+      await apiPost('lms_updateEmployee', STATE.employees.find(x=>x.EmpID===t.EmpID));
+      stampSeal(); toast('Entry deleted, balance restored.');
+      renderProfile(empId); renderEmployeeTable();
+    });
+  }
+  document.getElementById('addTxnBtn').onclick = ()=>openAddTxn(empId);
+  document.getElementById('printProfileBtn').onclick = ()=>window.print();
+}
+function leaveTypeLabel(t){
+  const map = {EL:'Earned Leave',CL:'Casual Leave',HPL:'Half Pay Leave',Maternity:'Maternity Leave',Paternity:'Paternity Leave',RH:'Restricted Holiday',SCL:'Special Casual Leave',CompOff:'Comp Off (grant)',Commuted:'Commuted Leave',AutoCredit:'⚡ Auto Credit'};
+  return map[t]||t;
+}
+
+/* ---------- Leave entry modal ---------- */
+const txnModal = document.getElementById('txnModal');
+document.getElementById('t_type').addEventListener('change', ()=>{
+  document.getElementById('t_against_wrap').style.display = document.getElementById('t_type').value==='CompOff' ? 'block':'none';
+});
+function openAddTxn(empId){
+  STATE.editingTxnId = null; STATE.currentEmpId = empId; daysManuallyEdited = false;
+  document.getElementById('txnModalTitle').textContent='Add leave entry';
+  document.getElementById('t_type').value='EL';
+  document.getElementById('t_days').value=1;
+  document.getElementById('t_from').value=todayISO();
+  document.getElementById('t_to').value=todayISO();
+  document.getElementById('t_against').value='';
+  document.getElementById('t_reason').value='';
+  document.getElementById('t_against_wrap').style.display='none';
+  document.getElementById('txnWarning').classList.remove('active');
+  txnModal.classList.add('active');
+}
+function openEditTxn(txnId){
+  const t = STATE.transactions.find(x=>x.TxnID===txnId); if(!t) return;
+  STATE.editingTxnId = txnId; daysManuallyEdited = true;
+  document.getElementById('txnModalTitle').textContent='Edit leave entry';
+  document.getElementById('t_type').value=t.LeaveType;
+  document.getElementById('t_days').value=t.Days;
+  document.getElementById('t_from').value=t.StartDate;
+  document.getElementById('t_to').value=t.EndDate;
+  document.getElementById('t_against').value=t.AgainstDate||'';
+  document.getElementById('t_reason').value=t.Reason||'';
+  document.getElementById('t_against_wrap').style.display = t.LeaveType==='CompOff'?'block':'none';
+  document.getElementById('txnWarning').classList.remove('active');
+  txnModal.classList.add('active');
+}
+let daysManuallyEdited = false;
+document.getElementById('t_days').addEventListener('input', ()=>{ daysManuallyEdited = true; validateTxnForm(); });
+document.getElementById('t_type').addEventListener('input', validateTxnForm);
+['t_from','t_to'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>{
+    const from = document.getElementById('t_from').value, to = document.getElementById('t_to').value;
+    if(from && to && !daysManuallyEdited){
+      const d = daysBetween(from, to);
+      if(d>0) document.getElementById('t_days').value = d;
+    }
+    validateTxnForm();
+  });
+});
+function validateTxnForm(){
+  const type = document.getElementById('t_type').value;
+  const days = Number(document.getElementById('t_days').value)||0;
+  const emp = STATE.employees.find(e=>e.EmpID===STATE.currentEmpId);
+  const box = document.getElementById('txnWarning');
+  let warnings = [];
+  if(!emp){ return; }
+  if(type==='CL' && days % 0.5 !== 0) warnings.push('CL supports only full-day or half-day (0.5) units.');
+  if(type==='Maternity' && emp.Gender!=='Female') warnings.push('Maternity Leave is applicable only for female employees.');
+  if(type==='Paternity' && emp.Gender!=='Male') warnings.push('Paternity Leave is applicable only for male employees.');
+  if(type==='Maternity'){
+    const used = (emp.Maternity_Used||0)+days;
+    if(used>80) warnings.push(`This entry takes Maternity Leave usage to ${used} days, exceeding the 80-day maximum.`);
+  }
+  if(type==='Paternity'){
+    const used = (emp.Paternity_Used||0)+days;
+    if(used>30) warnings.push(`This entry takes Paternity Leave usage to ${used} days, exceeding the 30-day maximum.`);
+  }
+  const projected = projectedBalanceAfter(emp, type, days);
+  if(projected!==null && projected<0) warnings.push(`Balance will go negative (projected: ${projected}). This is allowed but will be recorded as overdrawn.`);
+  box.innerHTML = warnings.join('<br>');
+  box.classList.toggle('active', warnings.length>0);
+}
+function balanceFieldFor(type){
+  if(type==='EL') return 'EL_Balance';
+  if(type==='CL') return 'CL_Balance';
+  if(type==='RH') return 'RH_Balance';
+  if(type==='SCL') return 'SCL_Balance';
+  if(type==='HPL') return 'HPL_Balance';
+  if(type==='Commuted') return 'HPL_Balance'; // commuted draws 2x from HPL
+  return null; // Maternity/Paternity/CompOff don't use a simple balance field
+}
+function projectedBalanceAfter(emp, type, days){
+  if(type==='Commuted'){ return emp.HPL_Balance - (days*2); }
+  const f = balanceFieldFor(type);
+  if(!f) return null;
+  return emp[f] - days;
+}
+document.getElementById('saveTxnBtn').onclick = async ()=>{
+  const emp = STATE.employees.find(e=>e.EmpID===STATE.currentEmpId); if(!emp) return;
+  const type = document.getElementById('t_type').value;
+  const days = Number(document.getElementById('t_days').value);
+  const from = document.getElementById('t_from').value;
+  const to = document.getElementById('t_to').value;
+  if(!days || !from || !to){ toast('Days, from-date and to-date are required.', true); return; }
+  if(type==='Maternity' && emp.Gender!=='Female'){ toast('Maternity Leave is only applicable for female employees.', true); return; }
+  if(type==='Paternity' && emp.Gender!=='Male'){ toast('Paternity Leave is only applicable for male employees.', true); return; }
+
+  // If editing, reverse the old effect first
+  if(STATE.editingTxnId){
+    const old = STATE.transactions.find(t=>t.TxnID===STATE.editingTxnId);
+    reverseTxnEffect(old);
+  }
+
+  const txn = {
+    TxnID: STATE.editingTxnId || uid('TXN'),
+    EmpID: emp.EmpID, LeaveType:type, StartDate:from, EndDate:to, Days:days,
+    AgainstDate: document.getElementById('t_against').value||'',
+    Reason: document.getElementById('t_reason').value,
+    EnteredBy: STATE.role,
+  };
+  applyTxnEffect(emp, txn);
+
+  const idx = STATE.transactions.findIndex(t=>t.TxnID===txn.TxnID);
+  if(idx>-1) STATE.transactions[idx]=txn; else STATE.transactions.push(txn);
+
+  await apiPost(STATE.editingTxnId?'lms_updateTxn':'lms_addTxn', txn);
+  await apiPost('lms_updateEmployee', emp);
+  stampSeal();
+  txnModal.classList.remove('active');
+  toast('Leave entry saved.');
+  renderProfile(emp.EmpID); renderEmployeeTable(); renderDashboard();
+};
+function applyTxnEffect(emp, txn){
+  const {LeaveType:type, Days:days} = txn;
+  if(type==='Commuted'){ emp.HPL_Balance -= days*2; }
+  else if(type==='Maternity'){ emp.Maternity_Used = (emp.Maternity_Used||0)+days; }
+  else if(type==='Paternity'){ emp.Paternity_Used = (emp.Paternity_Used||0)+days; }
+  else if(type==='CompOff'){ emp.CompOff_Balance = (emp.CompOff_Balance||0)+days; } // granting adds to balance
+  else { const f = balanceFieldFor(type); if(f) emp[f] -= days; }
+  emp.UpdatedAt = new Date().toISOString();
+}
+function reverseTxnEffect(txn){
+  if(!txn) return;
+  const emp = STATE.employees.find(e=>e.EmpID===txn.EmpID); if(!emp) return;
+  const {LeaveType:type, Days:days} = txn;
+  if(type==='Commuted'){ emp.HPL_Balance += days*2; }
+  else if(type==='Maternity'){ emp.Maternity_Used = Math.max(0,(emp.Maternity_Used||0)-days); }
+  else if(type==='Paternity'){ emp.Paternity_Used = Math.max(0,(emp.Paternity_Used||0)-days); }
+  else if(type==='CompOff'){ emp.CompOff_Balance = (emp.CompOff_Balance||0)-days; }
+  else { const f = balanceFieldFor(type); if(f) emp[f] += days; }
+}
+
+/* ---------- Modal close handlers ---------- */
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{
+  empModal.classList.remove('active'); txnModal.classList.remove('active');
+});
+[empModal, txnModal].forEach(m=>m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('active'); }));
+
+/* ---------- Archive ---------- */
+function renderArchiveTable(){
+  const canRestore = canDo('restoreEmployee');
+  document.getElementById('archiveTableBody').innerHTML = STATE.archived.map(e=>`
+    <tr>
+      <td>${e.Name}</td>
+      <td><span class="cadre-tag ${e.Cadre==='CAPF'?'capf':'noncapf'}">${e.Cadre}</span></td>
+      <td>${e.Designation||''}</td>
+      <td>${fmtDate(e.ArchivedAt)}</td>
+      <td>${canRestore?`<button class="icon-btn" data-restore="${e.EmpID}">Restore</button> <button class="icon-btn" data-purge="${e.EmpID}">Delete permanently</button>`:''}</td>
+    </tr>`).join('') || `<tr><td colspan="5"><div class="empty-state">Archive is empty.</div></td></tr>`;
+  if(canRestore){
+    document.querySelectorAll('[data-restore]').forEach(b=>b.onclick=async ()=>{
+      await apiPost('lms_restoreEmployee', {empId:b.dataset.restore});
+      const e = STATE.archived.find(x=>x.EmpID===b.dataset.restore);
+      STATE.archived = STATE.archived.filter(x=>x.EmpID!==b.dataset.restore);
+      STATE.employees.push(e);
+      stampSeal(); toast('Employee restored.'); renderAll();
+    });
+    document.querySelectorAll('[data-purge]').forEach(b=>b.onclick=async ()=>{
+      if(!confirm('Permanently delete this record? This cannot be undone.')) return;
+      await apiPost('lms_deleteArchivedPermanent', {empId:b.dataset.purge});
+      STATE.archived = STATE.archived.filter(x=>x.EmpID!==b.dataset.purge);
+      stampSeal(); toast('Record permanently deleted.'); renderArchiveTable();
+    });
+  }
+}
+
+/* ---------- Reports ---------- */
+function populateReportSelects(){
+  const opts = STATE.employees.map(e=>`<option value="${e.EmpID}">${e.Name}</option>`).join('');
+  document.getElementById('repEmp').innerHTML = opts;
+  document.getElementById('repEmp2').innerHTML = opts;
+  if(!document.getElementById('repDate').value) document.getElementById('repDate').value = todayISO();
+}
+document.getElementById('runSummaryBtn').onclick = ()=>{
+  const empId = document.getElementById('repEmp').value;
+  const asOn = document.getElementById('repDate').value;
+  const e = STATE.employees.find(x=>x.EmpID===empId); if(!e) return;
+  const b = reconstructBalanceAsOn(e, asOn);
+  const txnsUpto = STATE.transactions.filter(t=>t.EmpID===empId && (t.StartDate||'').slice(0,10) <= asOn && t.LeaveType!=='AutoCredit');
+  const out = document.getElementById('reportOutput');
+  out.style.display='block';
+  document.getElementById('reportGenAt').textContent = e.Name + ' · Generated ' + new Date().toLocaleString('en-IN') + ' · As on ' + fmtDate(asOn);
+  if(!b){
+    out.innerHTML = `<h3>${e.Name} — Leave Summary as on ${fmtDate(asOn)}</h3><div style="color:var(--muted);margin-top:10px;">No opening balance was recorded before this date — cannot reconstruct.</div>`;
+    return;
+  }
+  out.innerHTML = `
+    <h3 style="margin-bottom:10px;">${e.Name} — Leave Summary as on ${fmtDate(asOn)}</h3>
+    <div class="balances-strip">
+      ${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`<div class="balance-chip"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}
+    </div>
+    <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th></tr></thead>
+    <tbody>${txnsUpto.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${t.Days}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions.</td></tr>'}</tbody></table>`;
+};
+document.getElementById('printStmtBtn').onclick = ()=>{
+  const empId = document.getElementById('repEmp2').value;
+  const from = document.getElementById('repFrom').value, to = document.getElementById('repTo').value;
+  const e = STATE.employees.find(x=>x.EmpID===empId); if(!e || !from || !to) { toast('Select employee and date range.', true); return; }
+  const txns = STATE.transactions.filter(t=>t.EmpID===empId && t.LeaveType!=='AutoCredit' && (t.StartDate||'').slice(0,10)>=from && (t.StartDate||'').slice(0,10)<=to);
+  const b = reconstructBalanceAsOn(e, to);
+  const out = document.getElementById('reportOutput');
+  out.style.display='block';
+  document.getElementById('reportGenAt').textContent = e.Name + ' · Generated ' + new Date().toLocaleString('en-IN');
+  out.innerHTML = `
+    <h3>Leave Statement — ${e.Name}</h3>
+    <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px;">${fmtDate(from)} to ${fmtDate(to)} · ${e.Designation}, ${e.Cadre}, ${e.PayLevel}</div>
+    ${b?`<div class="balances-strip">${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`<div class="balance-chip"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}</div><div style="color:var(--muted);font-size:11.5px;margin:6px 0 12px;">Balance as on ${fmtDate(to)}</div>`:''}
+    <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th></tr></thead>
+    <tbody>${txns.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${t.Days}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions in range.</td></tr>'}</tbody></table>`;
+  setTimeout(()=>window.print(), 300);
+};
+document.getElementById('elhplBtn') && (document.getElementById('elhplBtn').onclick = null);
+
+function addDaysStr(dateStr, n){
+  const d = new Date(dateStr); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10);
+}
+// How much of a transaction's Days actually falls AFTER the cutoff date —
+// i.e. the portion that should be reversed to get the balance AS ON that
+// date. A leave spanning 28 Jun–4 Jul, viewed "as on 30 Jun", should only
+// have its 1 Jul–4 Jul portion (the part after the cutoff) added back;
+// the 28–30 Jun portion already happened by the cutoff and stays deducted.
+function futurePortionDays(t, asOnDateStr){
+  const s = (t.StartDate||'').slice(0,10), en = (t.EndDate||'').slice(0,10) || s;
+  const days = Number(t.Days)||0;
+  if(!s) return days;
+  if(en <= asOnDateStr) return 0;           // entirely on/before cutoff — nothing to reverse
+  if(s > asOnDateStr) return days;          // entirely after cutoff — reverse in full
+  // spans the cutoff: reverse only the after-cutoff portion, allocated
+  // proportionally across the calendar span (handles half-day CL etc. too)
+  const totalSpan = daysBetween(s, en);
+  const rate = totalSpan > 0 ? days / totalSpan : days;
+  const futureSpan = Math.max(daysBetween(addDaysStr(asOnDateStr,1), en), 0);
+  return rate * futureSpan;
+}
+function reconstructBalanceAsOn(emp, asOnDateStr){
+  const baseline = (emp.BalanceAsOnDate||'').slice(0,10);
+  if(baseline && asOnDateStr < baseline){
+    return null; // before the recorded opening baseline — cannot reconstruct
+  }
+  const bal = {
+    EL: emp.EL_Balance, HPL: emp.HPL_Balance, CL: emp.CL_Balance,
+    RH: emp.RH_Balance, SCL: emp.SCL_Balance, CompOff: emp.CompOff_Balance
+  };
+  const relevant = STATE.transactions.filter(t=>t.EmpID===emp.EmpID);
+  relevant.forEach(t=>{
+    if(t.LeaveType==='AutoCredit'){
+      // Single-day event — no proportional split needed, just check
+      // whether the credit's run-date falls after the cutoff.
+      const s = (t.StartDate||'').slice(0,10);
+      if(s > asOnDateStr){
+        bal.EL -= Number(t.EL_Delta||0);
+        bal.HPL -= Number(t.HPL_Delta||0);
+      }
+      return;
+    }
+    const portion = futurePortionDays(t, asOnDateStr);
+    if(portion<=0) return;
+    if(t.LeaveType==='Commuted'){
+      bal.HPL += portion*2;
+    } else if(t.LeaveType==='CompOff'){
+      bal.CompOff -= portion;
+    } else if(t.LeaveType==='Maternity' || t.LeaveType==='Paternity'){
+      // no balance field affected
+    } else if(bal[t.LeaveType]!==undefined){
+      bal[t.LeaveType] += portion;
+    }
+  });
+  // round to 1 decimal to avoid floating-point noise from proportional splits
+  Object.keys(bal).forEach(k=> bal[k] = Math.round(bal[k]*10)/10 );
+  return bal;
+}
+document.getElementById('allBalBtn').onclick = ()=>{
+  const asOnDate = document.getElementById('asOnDate').value || todayISO();
+  const out = document.getElementById('reportOutput');
+  out.style.display='block';
+  document.getElementById('reportGenAt').textContent = 'Generated ' + new Date().toLocaleString('en-IN') + ' · Balances as on ' + fmtDate(asOnDate);
+  const sorted = STATE.employees.slice().sort((a,b)=>(a.Name||'').localeCompare(b.Name||''));
+  const rows = sorted.map(e=>{
+    const b = reconstructBalanceAsOn(e, asOnDate);
+    if(!b) return `<tr><td>${e.Name}</td><td colspan="6" style="color:var(--muted)">No baseline recorded before ${fmtDate(asOnDate)}</td></tr>`;
+    return `<tr><td>${e.Name}</td><td>${b.EL}</td><td>${b.HPL}</td><td>${b.CL}</td><td>${b.RH}</td><td>${b.SCL}</td><td>${b.CompOff}</td></tr>`;
+  }).join('') || '<tr><td colspan="7">No employees.</td></tr>';
+  out.innerHTML = `
+    <h3 style="margin-bottom:4px;">Leave Balance Report — All Types</h3>
+    <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px;">As on ${fmtDate(asOnDate)} · SSC NWR · ${sorted.length} employees</div>
+    <table><thead><tr><th>Name</th><th>EL</th><th>HPL</th><th>CL</th><th>RH</th><th>SCL</th><th>Comp Off</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+  setTimeout(()=>window.print(), 300);
+};
+
+/* ---------- Settings ---------- */
+document.getElementById('saveSettingsBtn').onclick = async ()=>{
+  if(!canDo('manageSettings')){ toast('You do not have access to change settings.', true); return; }
+  const pass = document.getElementById('viewerPassInput').value;
+  STATE.settings.viewerPassword = pass;
+  await apiPost('lms_updateSettings', {viewerPassword: pass});
+  stampSeal(); toast('Settings saved.');
+};
+document.getElementById('saveRolePassBtn').onclick = async ()=>{
+  if(!canDo('manageSettings')){ toast('You do not have access to change settings.', true); return; }
+  const newAdmin = document.getElementById('adminPassInput').value.trim();
+  const newEditor = document.getElementById('editorPassInput').value.trim();
+  const payload = {};
+  if(newAdmin){ STATE.settings.adminPassword = newAdmin; payload.adminPassword = newAdmin; }
+  if(newEditor){ STATE.settings.editorPassword = newEditor; payload.editorPassword = newEditor; }
+  if(!Object.keys(payload).length){ toast('Enter at least one new password.', true); return; }
+  await apiPost('lms_updateSettings', payload);
+  stampSeal(); toast('Password(s) updated.');
+  document.getElementById('adminPassInput').value='';
+  document.getElementById('editorPassInput').value='';
+};
+</script>
+</body>
+</html>
