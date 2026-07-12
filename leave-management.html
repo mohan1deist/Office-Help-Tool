@@ -69,24 +69,33 @@ a{color:inherit;}
 
 /* ============ Login ============ */
 .login-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:24px;
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px; text-align:center;
 }
+.login-hero-tag{display:inline-flex;align-items:center;gap:8px;background:#ede9fe;border:1px solid #c4b5fd;padding:6px 18px;border-radius:20px;font-size:0.72rem;font-weight:700;color:#7c3aed;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:22px;}
+.login-hero-tag .hero-tag-dot{width:5px;height:5px;border-radius:50%;background:#7c3aed;}
+.login-hero-h1{font-size:2.6rem;font-weight:900;line-height:1.1;letter-spacing:-1.5px;margin-bottom:12px;color:#0f172a;font-family:'Plus Jakarta Sans',sans-serif;}
+.login-hero-h1 .accent{background:linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.login-hero-sub{font-size:0.95rem;color:#64748b;line-height:1.7;max-width:420px;margin:0 auto 36px;}
 .login-card{
-  width:100%;max-width:420px;background:linear-gradient(180deg, var(--surface), var(--surface-2));
-  border:1px solid var(--hairline); border-radius:20px; padding:40px 36px;
-  box-shadow:var(--shadow);
+  width:100%;max-width:420px;background:#fff;
+  border:1.5px solid var(--hairline); border-radius:22px; padding:32px 32px 28px;
+  box-shadow:0 16px 40px rgba(0,0,0,0.10);
   text-align:center;
 }
-.login-card .seal{margin:0 auto 18px;width:64px;height:64px;}
-.login-card .seal .mark{font-size:20px;}
-.login-card h1{font-size:26px;font-weight:600;letter-spacing:0.2px;}
-.login-card .sub{color:var(--muted);font-size:13px;margin-top:6px;letter-spacing:0.4px;text-transform:uppercase;}
-.login-tabs{display:flex;gap:8px;margin:28px 0 18px;background:rgba(15,23,42,0.04);border:1px solid var(--hairline);border-radius:12px;padding:4px;}
-.login-tab{flex:1;padding:9px 0;border:none;background:transparent;color:var(--muted);border-radius:9px;font-size:13px;font-weight:600;transition:all .2s;}
-.login-tab.active{background:var(--gold-soft);color:var(--gold);}
+.login-role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.login-role{
+  border:1.5px solid var(--hairline); background:var(--surface-2); border-radius:16px;
+  padding:16px 8px; display:flex; flex-direction:column; align-items:center; gap:4px;
+  transition:all .2s ease;
+}
+.login-role:hover{border-color:#c4b5fd;}
+.login-role.active{background:#eef2ff;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.12);}
+.login-role-icon{font-size:22px;}
+.login-role-name{font-size:12.5px;font-weight:800;color:var(--text);}
+.login-role-desc{font-size:10px;color:var(--muted);}
 .login-card input{
-  width:100%;padding:13px 14px;background:rgba(15,23,42,0.04);
+  width:100%;padding:13px 14px;background:var(--surface-2);
   border:1px solid var(--hairline);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:14px;
 }
 .login-card input:focus{outline:2px solid var(--gold);outline-offset:1px;}
@@ -341,20 +350,33 @@ select option{background:#ffffff;color:#1e293b;}
 
 <!-- ============ LOGIN ============ -->
 <div class="login-screen" id="loginScreen">
+  <div class="login-hero-tag"><span class="hero-tag-dot"></span>SSC · Northern Western Region</div>
+  <h1 class="login-hero-h1">Leave Management,<br><span class="accent">Simplified.</span></h1>
+  <p class="login-hero-sub">Track balances, process entries, and keep every employee's leave record synced — all in one place.</p>
+
   <div class="login-card">
-    <div class="seal"><span class="mark">SSC</span></div>
-    <h1>Leave Management</h1>
-    <div class="sub">SSC · Northern Western Region</div>
-    <div class="login-tabs">
-      <button class="login-tab active" data-role="admin">Admin</button>
-      <button class="login-tab" data-role="editor">Editor</button>
-      <button class="login-tab" data-role="viewer">Viewer</button>
+    <div class="login-role-grid" id="loginRoleGrid">
+      <button class="login-role active" data-role="admin">
+        <span class="login-role-icon">🛡️</span>
+        <span class="login-role-name">Admin</span>
+        <span class="login-role-desc">Full access</span>
+      </button>
+      <button class="login-role" data-role="editor">
+        <span class="login-role-icon">✏️</span>
+        <span class="login-role-name">Editor</span>
+        <span class="login-role-desc">Manage entries</span>
+      </button>
+      <button class="login-role" data-role="viewer">
+        <span class="login-role-icon">👁️</span>
+        <span class="login-role-name">Viewer</span>
+        <span class="login-role-desc">Read-only</span>
+      </button>
     </div>
     <div id="loginPassWrap">
       <input type="password" id="loginPass" placeholder="Password">
     </div>
     <div class="login-err" id="loginErr"></div>
-    <button class="btn btn-primary" id="loginBtn">Continue</button>
+    <button class="btn btn-primary" id="loginBtn">Continue →</button>
     <div class="viewer-note">Viewer access is read-only and open by default.</div>
   </div>
 </div>
@@ -573,10 +595,7 @@ select option{background:#ffffff;color:#1e293b;}
         <div class="form-field"><label>CL</label><input type="number" id="f_cl" value="0"></div>
         <div class="form-field"><label>RH</label><input type="number" id="f_rh" value="0"></div>
       </div>
-      <div class="form-row">
-        <div class="form-field"><label>SCL</label><input type="number" id="f_scl" value="0"></div>
-        <div class="form-field"><label>Comp Off</label><input type="number" id="f_compoff" value="0"></div>
-      </div>
+      <div style="color:var(--muted);font-size:11.5px;margin-bottom:14px;">Special Casual Leave and Comp Off have no opening balance — they're granted situationally per case, not accrued. Comp Off accumulates only when granted via a leave entry.</div>
       <div class="form-actions">
         <button class="btn btn-ghost" data-close>Cancel</button>
         <button class="btn btn-primary" id="saveEmpBtn">Save employee</button>
@@ -599,6 +618,7 @@ select option{background:#ffffff;color:#1e293b;}
             <option value="HPL">Half Pay Leave (HPL)</option>
             <option value="Maternity">Maternity Leave</option>
             <option value="Paternity">Paternity Leave</option>
+            <option value="CCL">Children Care Leave (CCL)</option>
             <option value="RH">Restricted Holiday (RH)</option>
             <option value="SCL">Special Casual Leave (SCL)</option>
             <option value="CompOff">Compensatory Off (grant)</option>
@@ -641,6 +661,7 @@ let STATE = {
 /* ---------- Editor permission grants ---------- */
 const GRANTABLE_FUNCTIONS = [
   {key:'addEmployee', label:'Add employee'},
+  {key:'editEmployee', label:'Edit employee profile'},
   {key:'archiveEmployee', label:'Archive employee'},
   {key:'restoreEmployee', label:'Restore / purge archived employee'},
   {key:'editTxn', label:'Edit leave transactions'},
@@ -737,6 +758,19 @@ function renderGrantList(){
 /* ---------- Utilities ---------- */
 function uid(p){ return p+'_'+Date.now()+'_'+Math.floor(Math.random()*10000); }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
+function normDate(v){
+  if(!v) return '';
+  const s = String(v);
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; // already a clean plain date
+  const d = new Date(s);
+  if(isNaN(d)) return s.slice(0,10);
+  // Use LOCAL calendar date parts rather than raw UTC slicing — this
+  // corrects legacy values that got timezone-shifted by Sheets' old
+  // date-auto-conversion (e.g. "2026-06-30T18:30:00.000Z" really means
+  // "1 Jul 2026" in IST, not "30 Jun").
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 function fmtDate(d){ if(!d) return '—'; const dt = new Date(d); if(isNaN(dt)) return d; return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
 function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000)+1; }
 function toast(msg, isErr){
@@ -813,9 +847,9 @@ function startAutoSync(){
 /* ---------- Login ---------- */
 let selectedRole = 'admin';
 document.getElementById('loginPassWrap').style.display = 'block';
-document.querySelectorAll('.login-tab').forEach(tab=>{
+document.querySelectorAll('.login-role').forEach(tab=>{
   tab.onclick = ()=>{
-    document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.login-role').forEach(t=>t.classList.remove('active'));
     tab.classList.add('active');
     selectedRole = tab.dataset.role;
     document.getElementById('loginPassWrap').style.display = selectedRole==='viewer' && !STATE.settings.viewerPassword ? 'none':'block';
@@ -1013,12 +1047,11 @@ document.getElementById('addEmpBtn').onclick = ()=>{
   document.getElementById('f_designation').value=''; document.getElementById('f_paylevel').value='Level 1';
   document.getElementById('f_balDate').value=todayISO();
   document.getElementById('f_dob').value=''; document.getElementById('f_retire').value=''; document.getElementById('f_basic').value='';
-  ['f_el','f_hpl','f_cl','f_rh','f_scl','f_compoff'].forEach(id=>document.getElementById(id).value=0);
+  ['f_el','f_hpl','f_cl','f_rh'].forEach(id=>document.getElementById(id).value=0);
   empModal.classList.add('active');
 };
 function toDateInputValue(v){
-  if(!v) return '';
-  return String(v).slice(0,10);
+  return normDate(v);
 }
 function openEditEmployee(emp){
   editingEmpId = emp.EmpID;
@@ -1037,8 +1070,6 @@ function openEditEmployee(emp){
   document.getElementById('f_hpl').value=emp.HPL_Balance||0;
   document.getElementById('f_cl').value=emp.CL_Balance||0;
   document.getElementById('f_rh').value=emp.RH_Balance||0;
-  document.getElementById('f_scl').value=emp.SCL_Balance||0;
-  document.getElementById('f_compoff').value=emp.CompOff_Balance||0;
   empModal.classList.add('active');
 }
 document.getElementById('saveEmpBtn').onclick = async ()=>{
@@ -1060,14 +1091,13 @@ document.getElementById('saveEmpBtn').onclick = async ()=>{
     HPL_Balance: Number(document.getElementById('f_hpl').value)||0,
     CL_Balance: Number(document.getElementById('f_cl').value)||0,
     RH_Balance: Number(document.getElementById('f_rh').value)||0,
-    SCL_Balance: Number(document.getElementById('f_scl').value)||0,
-    CompOff_Balance: Number(document.getElementById('f_compoff').value)||0,
     Status:'Active',
   };
   const idx = STATE.employees.findIndex(e=>e.EmpID===emp.EmpID);
   if(idx>-1){
     const preserved = STATE.employees[idx];
     emp.Maternity_Used = preserved.Maternity_Used||0; emp.Paternity_Used = preserved.Paternity_Used||0;
+    emp.CCL_Used = preserved.CCL_Used||0;
     emp.CreatedAt = preserved.CreatedAt;
     // If the "balance as on" date was changed, this is a deliberate new
     // opening-balance baseline — re-arm auto-credit so EL/HPL/CL/RH get
@@ -1085,7 +1115,8 @@ document.getElementById('saveEmpBtn').onclick = async ()=>{
     STATE.employees[idx] = {...preserved, ...emp};
     await apiPost('lms_updateEmployee', STATE.employees[idx]);
   } else {
-    emp.Maternity_Used = 0; emp.Paternity_Used = 0;
+    emp.Maternity_Used = 0; emp.Paternity_Used = 0; emp.CCL_Used = 0;
+    emp.SCL_Balance = 0; emp.CompOff_Balance = 0;
     STATE.employees.push(emp);
     await apiPost('lms_addEmployee', emp);
   }
@@ -1112,7 +1143,7 @@ document.getElementById('backToEmp').onclick = ()=>{
 function renderProfile(empId){
   const e = STATE.employees.find(x=>x.EmpID===empId); if(!e) return;
   document.getElementById('profileGenAt').textContent = e.Name + ' · Generated ' + new Date().toLocaleString('en-IN');
-  const canEdit = STATE.role==='admin' || STATE.role==='editor';
+  const canEdit = canDo('editEmployee');
   const canArchive = canDo('archiveEmployee');
   const canEditTxn = canDo('editTxn');
   const canDeleteTxn = canDo('deleteTxn');
@@ -1145,6 +1176,11 @@ function renderProfile(empId){
       `).join('')}
     </div>
     <div style="font-size:12px;color:var(--muted);">Live balance as on ${fmtDate(todayISO())} · opening balance was recorded as on ${fmtDate(e.BalanceAsOnDate)}</div>
+    ${(e.Gender==='Female'||e.Gender==='Male')?`<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px;">
+      ${e.Gender==='Female'?`<div>Maternity used: <span style="color:var(--text);font-weight:600;">${e.Maternity_Used||0} / 180</span></div>`:''}
+      ${e.Gender==='Male'?`<div>Paternity used: <span style="color:var(--text);font-weight:600;">${e.Paternity_Used||0} / 15</span></div>`:''}
+      ${e.Gender==='Female'?`<div>CCL used: <span style="color:var(--text);font-weight:600;">${e.CCL_Used||0} / 730</span></div>`:''}
+    </div>`:''}
   `;
   if(canEdit) document.getElementById('editEmpBtn').onclick = ()=>openEditEmployee(e);
   if(canArchive){
@@ -1191,7 +1227,7 @@ function renderProfile(empId){
   document.getElementById('printProfileBtn').onclick = ()=>window.print();
 }
 function leaveTypeLabel(t){
-  const map = {EL:'Earned Leave',CL:'Casual Leave',HPL:'Half Pay Leave',Maternity:'Maternity Leave',Paternity:'Paternity Leave',RH:'Restricted Holiday',SCL:'Special Casual Leave',CompOff:'Comp Off (grant)',Commuted:'Commuted Leave',AutoCredit:'⚡ Auto Credit'};
+  const map = {EL:'Earned Leave',CL:'Casual Leave',HPL:'Half Pay Leave',Maternity:'Maternity Leave',Paternity:'Paternity Leave',CCL:'Children Care Leave',RH:'Restricted Holiday',SCL:'Special Casual Leave',CompOff:'Comp Off (grant)',Commuted:'Commuted Leave',AutoCredit:'⚡ Auto Credit'};
   return map[t]||t;
 }
 
@@ -1244,7 +1280,7 @@ function hasOverlap(empId, from, to, excludeTxnId){
   return STATE.transactions.some(t=>{
     if(t.EmpID!==empId || t.LeaveType==='AutoCredit') return false;
     if(excludeTxnId && t.TxnID===excludeTxnId) return false;
-    const s=(t.StartDate||'').slice(0,10), en=(t.EndDate||'').slice(0,10)||s;
+    const s=normDate(t.StartDate), en=normDate(t.EndDate)||s;
     return s<=to && en>=from; // date ranges intersect
   });
 }
@@ -1263,13 +1299,20 @@ function validateTxnForm(){
   if(type==='CL' && days % 0.5 !== 0) warnings.push('CL supports only full-day or half-day (0.5) units.');
   if(type==='Maternity' && emp.Gender!=='Female') warnings.push('Maternity Leave is applicable only for female employees.');
   if(type==='Paternity' && emp.Gender!=='Male') warnings.push('Paternity Leave is applicable only for male employees.');
+  if(type==='CCL' && emp.Gender!=='Female') warnings.push('Children Care Leave is applicable only for female employees.');
   if(type==='Maternity'){
+    const existing = STATE.transactions.some(t=>t.EmpID===emp.EmpID && t.LeaveType==='Maternity' && t.TxnID!==STATE.editingTxnId);
+    if(existing) warnings.push('Maternity Leave is granted in a single spell — this employee already has a Maternity Leave entry recorded.');
     const used = (emp.Maternity_Used||0)+days;
-    if(used>80) warnings.push(`This entry takes Maternity Leave usage to ${used} days, exceeding the 80-day maximum.`);
+    if(used>180) warnings.push(`This entry takes Maternity Leave usage to ${used} days, exceeding the 180-day maximum.`);
   }
   if(type==='Paternity'){
     const used = (emp.Paternity_Used||0)+days;
-    if(used>30) warnings.push(`This entry takes Paternity Leave usage to ${used} days, exceeding the 30-day maximum.`);
+    if(used>15) warnings.push(`This entry takes Paternity Leave usage to ${used} days, exceeding the 15-day maximum.`);
+  }
+  if(type==='CCL'){
+    const used = (emp.CCL_Used||0)+days;
+    if(used>730) warnings.push(`This entry takes Children Care Leave usage to ${used} days, exceeding the 730-day maximum.`);
   }
   const projected = projectedBalanceAfter(emp, type, days);
   if(projected!==null && projected<0) warnings.push(`Balance will go negative (projected: ${projected}). This is allowed but will be recorded as overdrawn.`);
@@ -1300,6 +1343,13 @@ document.getElementById('saveTxnBtn').onclick = async ()=>{
   if(!days || !from || !to){ toast('Days, from-date and to-date are required.', true); return; }
   if(type==='Maternity' && emp.Gender!=='Female'){ toast('Maternity Leave is only applicable for female employees.', true); return; }
   if(type==='Paternity' && emp.Gender!=='Male'){ toast('Paternity Leave is only applicable for male employees.', true); return; }
+  if(type==='CCL' && emp.Gender!=='Female'){ toast('Children Care Leave is only applicable for female employees.', true); return; }
+  if(type==='Maternity'){
+    const existing = STATE.transactions.some(t=>t.EmpID===emp.EmpID && t.LeaveType==='Maternity' && t.TxnID!==STATE.editingTxnId);
+    if(existing){
+      if(!confirm('Maternity Leave is granted in a single spell, and this employee already has one recorded. Add another entry anyway?')) return;
+    }
+  }
   if(hasOverlap(emp.EmpID, from, to, STATE.editingTxnId)){
     if(!confirm('This date range overlaps an existing leave entry for this employee. Save anyway?')) return;
   }
@@ -1334,6 +1384,7 @@ function applyTxnEffect(emp, txn){
   if(type==='Commuted'){ emp.HPL_Balance -= days*2; }
   else if(type==='Maternity'){ emp.Maternity_Used = (emp.Maternity_Used||0)+days; }
   else if(type==='Paternity'){ emp.Paternity_Used = (emp.Paternity_Used||0)+days; }
+  else if(type==='CCL'){ emp.CCL_Used = (emp.CCL_Used||0)+days; }
   else if(type==='CompOff'){ emp.CompOff_Balance = (emp.CompOff_Balance||0)+days; } // granting adds to balance
   else { const f = balanceFieldFor(type); if(f) emp[f] -= days; }
   emp.UpdatedAt = new Date().toISOString();
@@ -1345,6 +1396,7 @@ function reverseTxnEffect(txn){
   if(type==='Commuted'){ emp.HPL_Balance += days*2; }
   else if(type==='Maternity'){ emp.Maternity_Used = Math.max(0,(emp.Maternity_Used||0)-days); }
   else if(type==='Paternity'){ emp.Paternity_Used = Math.max(0,(emp.Paternity_Used||0)-days); }
+  else if(type==='CCL'){ emp.CCL_Used = Math.max(0,(emp.CCL_Used||0)-days); }
   else if(type==='CompOff'){ emp.CompOff_Balance = (emp.CompOff_Balance||0)-days; }
   else { const f = balanceFieldFor(type); if(f) emp[f] += days; }
 }
@@ -1404,7 +1456,7 @@ document.getElementById('runSummaryBtn').onclick = ()=>{
   const asOn = document.getElementById('repDate').value;
   const e = STATE.employees.find(x=>x.EmpID===empId); if(!e) return;
   const b = reconstructBalanceAsOn(e, asOn);
-  const txnsUpto = STATE.transactions.filter(t=>t.EmpID===empId && (t.StartDate||'').slice(0,10) <= asOn)
+  const txnsUpto = STATE.transactions.filter(t=>t.EmpID===empId && normDate(t.StartDate) <= asOn)
     .sort((a,b)=>new Date(a.StartDate)-new Date(b.StartDate));
   const out = document.getElementById('reportOutput');
   out.style.display='block';
@@ -1425,7 +1477,7 @@ document.getElementById('printStmtBtn').onclick = ()=>{
   const empId = document.getElementById('repEmp2').value;
   const from = document.getElementById('repFrom').value, to = document.getElementById('repTo').value;
   const e = STATE.employees.find(x=>x.EmpID===empId); if(!e || !from || !to) { toast('Select employee and date range.', true); return; }
-  const txns = STATE.transactions.filter(t=>t.EmpID===empId && (t.StartDate||'').slice(0,10)>=from && (t.StartDate||'').slice(0,10)<=to)
+  const txns = STATE.transactions.filter(t=>t.EmpID===empId && normDate(t.StartDate)>=from && normDate(t.StartDate)<=to)
     .sort((a,b)=>new Date(a.StartDate)-new Date(b.StartDate));
   const b = reconstructBalanceAsOn(e, to);
   const out = document.getElementById('reportOutput');
@@ -1450,7 +1502,7 @@ function addDaysStr(dateStr, n){
 // have its 1 Jul–4 Jul portion (the part after the cutoff) added back;
 // the 28–30 Jun portion already happened by the cutoff and stays deducted.
 function futurePortionDays(t, asOnDateStr){
-  const s = (t.StartDate||'').slice(0,10), en = (t.EndDate||'').slice(0,10) || s;
+  const s = normDate(t.StartDate), en = normDate(t.EndDate) || s;
   const days = Number(t.Days)||0;
   if(!s) return days;
   if(en <= asOnDateStr) return 0;           // entirely on/before cutoff — nothing to reverse
@@ -1463,7 +1515,7 @@ function futurePortionDays(t, asOnDateStr){
   return rate * futureSpan;
 }
 function reconstructBalanceAsOn(emp, asOnDateStr){
-  const baseline = (emp.BalanceAsOnDate||'').slice(0,10);
+  const baseline = normDate(emp.BalanceAsOnDate);
   if(baseline && asOnDateStr < baseline){
     return null; // before the recorded opening baseline — cannot reconstruct
   }
@@ -1476,7 +1528,7 @@ function reconstructBalanceAsOn(emp, asOnDateStr){
     if(t.LeaveType==='AutoCredit'){
       // Single-day event — no proportional split needed, just check
       // whether the credit's run-date falls after the cutoff.
-      const s = (t.StartDate||'').slice(0,10);
+      const s = normDate(t.StartDate);
       if(s > asOnDateStr){
         bal.EL -= Number(t.EL_Delta||0);
         bal.HPL -= Number(t.HPL_Delta||0);
@@ -1489,7 +1541,7 @@ function reconstructBalanceAsOn(emp, asOnDateStr){
       bal.HPL += portion*2;
     } else if(t.LeaveType==='CompOff'){
       bal.CompOff -= portion;
-    } else if(t.LeaveType==='Maternity' || t.LeaveType==='Paternity'){
+    } else if(t.LeaveType==='Maternity' || t.LeaveType==='Paternity' || t.LeaveType==='CCL'){
       // no balance field affected
     } else if(bal[t.LeaveType]!==undefined){
       bal[t.LeaveType] += portion;
