@@ -511,7 +511,7 @@ select option{background:#ffffff;color:#1e293b;}
       </div>
       <div class="card" style="margin-top:16px;">
         <h3 style="font-size:15px;margin-bottom:6px;">Leave balance report — all types, as on any date</h3>
-        <div style="color:var(--muted);font-size:12.5px;margin-bottom:12px;">Reconstructs EL, HPL, CL, RH, SCL and Comp Off balances for every active employee as they stood on a chosen date, by reversing entries recorded after that date. Also useful for the 1 Jan / 1 Jul biannual snapshot.</div>
+        <div style="color:var(--muted);font-size:12.5px;margin-bottom:12px;">Reconstructs EL, HPL, CL, RH balances plus Maternity/Paternity/CCL days remaining for every active employee as they stood on a chosen date. Also useful for the 1 Jan / 1 Jul biannual snapshot.</div>
         <div class="form-row" style="max-width:320px;">
           <div class="form-field"><label>As on date</label><input type="date" id="asOnDate"></div>
         </div>
@@ -1171,16 +1171,14 @@ function renderProfile(empId){
     </div>
     ${e.Remarks?`<div style="margin-top:10px;font-size:13px;color:var(--muted);">Remarks: <span style="color:var(--text)">${e.Remarks}</span></div>`:''}
     <div class="balances-strip">
-      ${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`
+      ${['EL','HPL','CL','RH'].map(k=>`
         <div class="balance-chip c-${k}"><div class="v" style="color:${e[k+'_Balance']<0?'var(--danger)':''}">${e[k+'_Balance']}</div><div class="k">${k}</div></div>
       `).join('')}
+      ${e.Gender==='Female'?`<div class="balance-chip c-Maternity"><div class="v">${180-(e.Maternity_Used||0)}</div><div class="k">Maternity</div></div>`:''}
+      ${e.Gender==='Male'?`<div class="balance-chip c-Paternity"><div class="v">${15-(e.Paternity_Used||0)}</div><div class="k">Paternity</div></div>`:''}
+      ${e.Gender==='Female'?`<div class="balance-chip c-CCL"><div class="v">${730-(e.CCL_Used||0)}</div><div class="k">CCL</div></div>`:''}
     </div>
-    <div style="font-size:12px;color:var(--muted);">Live balance as on ${fmtDate(todayISO())} · opening balance was recorded as on ${fmtDate(e.BalanceAsOnDate)}</div>
-    ${(e.Gender==='Female'||e.Gender==='Male')?`<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px;">
-      ${e.Gender==='Female'?`<div>Maternity used: <span style="color:var(--text);font-weight:600;">${e.Maternity_Used||0} / 180</span></div>`:''}
-      ${e.Gender==='Male'?`<div>Paternity used: <span style="color:var(--text);font-weight:600;">${e.Paternity_Used||0} / 15</span></div>`:''}
-      ${e.Gender==='Female'?`<div>CCL used: <span style="color:var(--text);font-weight:600;">${e.CCL_Used||0} / 730</span></div>`:''}
-    </div>`:''}
+    <div style="font-size:12px;color:var(--muted);">Live balance as on ${fmtDate(todayISO())} · opening balance was recorded as on ${fmtDate(e.BalanceAsOnDate)} · Maternity/Paternity/CCL shown as days remaining against their cap</div>
   `;
   if(canEdit) document.getElementById('editEmpBtn').onclick = ()=>openEditEmployee(e);
   if(canArchive){
@@ -1468,7 +1466,7 @@ document.getElementById('runSummaryBtn').onclick = ()=>{
   out.innerHTML = `
     <h3 style="margin-bottom:10px;">${e.Name} — Leave Summary as on ${fmtDate(asOn)}</h3>
     <div class="balances-strip">
-      ${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`<div class="balance-chip c-${k}"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}
+      ${['EL','HPL','CL','RH'].concat(e.Gender==='Female'?['Maternity','CCL']:[]).concat(e.Gender==='Male'?['Paternity']:[]).map(k=>`<div class="balance-chip c-${k}"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}
     </div>
     <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th></tr></thead>
     <tbody>${txnsUpto.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${txnDaysDisplay(t)}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions.</td></tr>'}</tbody></table>`;
@@ -1486,7 +1484,7 @@ document.getElementById('printStmtBtn').onclick = ()=>{
   out.innerHTML = `
     <h3>Leave Statement — ${e.Name}</h3>
     <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px;">${fmtDate(from)} to ${fmtDate(to)} · ${e.Designation}, ${e.Cadre}, ${e.PayLevel}</div>
-    ${b?`<div class="balances-strip">${['EL','HPL','CL','RH','SCL','CompOff'].map(k=>`<div class="balance-chip c-${k}"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}</div><div style="color:var(--muted);font-size:11.5px;margin:6px 0 12px;">Balance as on ${fmtDate(to)}</div>`:''}
+    ${b?`<div class="balances-strip">${['EL','HPL','CL','RH'].concat(e.Gender==='Female'?['Maternity','CCL']:[]).concat(e.Gender==='Male'?['Paternity']:[]).map(k=>`<div class="balance-chip c-${k}"><div class="v">${b[k]}</div><div class="k">${k}</div></div>`).join('')}</div><div style="color:var(--muted);font-size:11.5px;margin:6px 0 12px;">Balance as on ${fmtDate(to)}</div>`:''}
     <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th></tr></thead>
     <tbody>${txns.map(t=>`<tr><td>${leaveTypeLabel(t.LeaveType)}</td><td>${fmtDate(t.StartDate)}</td><td>${fmtDate(t.EndDate)}</td><td>${txnDaysDisplay(t)}</td><td>${t.Reason||''}</td></tr>`).join('')||'<tr><td colspan="5">No transactions in range.</td></tr>'}</tbody></table>`;
   setTimeout(()=>window.print(), 300);
@@ -1514,14 +1512,15 @@ function futurePortionDays(t, asOnDateStr){
   const futureSpan = Math.max(daysBetween(addDaysStr(asOnDateStr,1), en), 0);
   return rate * futureSpan;
 }
+const LEAVE_CAPS = {Maternity:180, Paternity:15, CCL:730};
 function reconstructBalanceAsOn(emp, asOnDateStr){
   const baseline = normDate(emp.BalanceAsOnDate);
   if(baseline && asOnDateStr < baseline){
     return null; // before the recorded opening baseline — cannot reconstruct
   }
   const bal = {
-    EL: emp.EL_Balance, HPL: emp.HPL_Balance, CL: emp.CL_Balance,
-    RH: emp.RH_Balance, SCL: emp.SCL_Balance, CompOff: emp.CompOff_Balance
+    EL: emp.EL_Balance, HPL: emp.HPL_Balance, CL: emp.CL_Balance, RH: emp.RH_Balance,
+    MaternityUsed: emp.Maternity_Used||0, PaternityUsed: emp.Paternity_Used||0, CCLUsed: emp.CCL_Used||0
   };
   const relevant = STATE.transactions.filter(t=>t.EmpID===emp.EmpID);
   relevant.forEach(t=>{
@@ -1540,13 +1539,21 @@ function reconstructBalanceAsOn(emp, asOnDateStr){
     if(t.LeaveType==='Commuted'){
       bal.HPL += portion*2;
     } else if(t.LeaveType==='CompOff'){
-      bal.CompOff -= portion;
-    } else if(t.LeaveType==='Maternity' || t.LeaveType==='Paternity' || t.LeaveType==='CCL'){
-      // no balance field affected
+      // Comp Off has no maintained balance — granted situationally, not tracked here.
+    } else if(t.LeaveType==='Maternity'){
+      bal.MaternityUsed -= portion;
+    } else if(t.LeaveType==='Paternity'){
+      bal.PaternityUsed -= portion;
+    } else if(t.LeaveType==='CCL'){
+      bal.CCLUsed -= portion;
     } else if(bal[t.LeaveType]!==undefined){
       bal[t.LeaveType] += portion;
     }
   });
+  bal.Maternity = LEAVE_CAPS.Maternity - Math.max(0, bal.MaternityUsed);
+  bal.Paternity = LEAVE_CAPS.Paternity - Math.max(0, bal.PaternityUsed);
+  bal.CCL = LEAVE_CAPS.CCL - Math.max(0, bal.CCLUsed);
+  delete bal.MaternityUsed; delete bal.PaternityUsed; delete bal.CCLUsed;
   // round to 1 decimal to avoid floating-point noise from proportional splits
   Object.keys(bal).forEach(k=> bal[k] = Math.round(bal[k]*10)/10 );
   return bal;
@@ -1559,13 +1566,13 @@ document.getElementById('allBalBtn').onclick = ()=>{
   const sorted = STATE.employees.slice().sort((a,b)=>(a.Name||'').localeCompare(b.Name||''));
   const rows = sorted.map(e=>{
     const b = reconstructBalanceAsOn(e, asOnDate);
-    if(!b) return `<tr><td>${e.Name}</td><td colspan="6" style="color:var(--muted)">No baseline recorded before ${fmtDate(asOnDate)}</td></tr>`;
-    return `<tr><td>${e.Name}</td><td>${b.EL}</td><td>${b.HPL}</td><td>${b.CL}</td><td>${b.RH}</td><td>${b.SCL}</td><td>${b.CompOff}</td></tr>`;
-  }).join('') || '<tr><td colspan="7">No employees.</td></tr>';
+    if(!b) return `<tr><td>${e.Name}</td><td colspan="7" style="color:var(--muted)">No baseline recorded before ${fmtDate(asOnDate)}</td></tr>`;
+    return `<tr><td>${e.Name}</td><td>${b.EL}</td><td>${b.HPL}</td><td>${b.CL}</td><td>${b.RH}</td><td>${e.Gender==='Female'?b.Maternity:'—'}</td><td>${e.Gender==='Male'?b.Paternity:'—'}</td><td>${e.Gender==='Female'?b.CCL:'—'}</td></tr>`;
+  }).join('') || '<tr><td colspan="8">No employees.</td></tr>';
   out.innerHTML = `
     <h3 style="margin-bottom:4px;">Leave Balance Report — All Types</h3>
-    <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px;">As on ${fmtDate(asOnDate)} · SSC NWR · ${sorted.length} employees</div>
-    <table><thead><tr><th>Name</th><th>EL</th><th>HPL</th><th>CL</th><th>RH</th><th>SCL</th><th>Comp Off</th></tr></thead>
+    <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px;">As on ${fmtDate(asOnDate)} · SSC NWR · ${sorted.length} employees · Maternity/Paternity/CCL shown as days remaining against cap</div>
+    <table><thead><tr><th>Name</th><th>EL</th><th>HPL</th><th>CL</th><th>RH</th><th>Maternity</th><th>Paternity</th><th>CCL</th></tr></thead>
     <tbody>${rows}</tbody></table>`;
   setTimeout(()=>window.print(), 300);
 };
